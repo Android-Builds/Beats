@@ -32,9 +32,11 @@ class AudioAppState extends State<AudioApp> {
 
   get isPaused => playerState == PlayerState.paused;
 
-  get durationText => duration != null ? duration.toString().split('.').first : '';
+  get durationText =>
+      duration != null ? duration.toString().split('.').first : '';
 
-  get positionText => position != null ? position.toString().split('.').first : '';
+  get positionText =>
+      position != null ? position.toString().split('.').first : '';
 
   bool isMuted = false;
 
@@ -51,6 +53,8 @@ class AudioAppState extends State<AudioApp> {
   @override
   void dispose() {
     super.dispose();
+    _positionSubscription.cancel();
+    _audioPlayerStateSubscription.cancel();
   }
 
   void initAudioPlayer() {
@@ -73,9 +77,11 @@ class AudioAppState extends State<AudioApp> {
       }
     });
 
-    _positionSubscription = audioPlayer.onAudioPositionChanged.listen((p) => {if (mounted) setState(() => position = p)});
+    _positionSubscription = audioPlayer.onAudioPositionChanged
+        .listen((p) => {if (mounted) setState(() => position = p)});
 
-    _audioPlayerStateSubscription = audioPlayer.onPlayerStateChanged.listen((s) {
+    _audioPlayerStateSubscription =
+        audioPlayer.onPlayerStateChanged.listen((s) {
       if (s == AudioPlayerState.PLAYING) {
         {
           if (mounted) setState(() => duration = audioPlayer.duration);
@@ -99,7 +105,8 @@ class AudioAppState extends State<AudioApp> {
 
   Future play() async {
     await audioPlayer.play(kUrl);
-    MediaNotification.showNotification(title: title, author: artist, artUri: image, isPlaying: true);
+    MediaNotification.showNotification(
+        title: title, author: artist, artUri: image, isPlaying: true);
     if (mounted)
       setState(() {
         playerState = PlayerState.playing;
@@ -108,7 +115,8 @@ class AudioAppState extends State<AudioApp> {
 
   Future pause() async {
     await audioPlayer.pause();
-    MediaNotification.showNotification(title: title, author: artist, artUri: image, isPlaying: false);
+    MediaNotification.showNotification(
+        title: title, author: artist, artUri: image, isPlaying: false);
     setState(() {
       playerState = PlayerState.paused;
     });
@@ -191,10 +199,10 @@ class AudioAppState extends State<AudioApp> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 350,
-                  height: 350,
+                  width: 300,
+                  height: 300,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(15.0),
                     shape: BoxShape.rectangle,
                     image: DecorationImage(
                       fit: BoxFit.fill,
@@ -203,7 +211,7 @@ class AudioAppState extends State<AudioApp> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 35.0, bottom: 35),
+                  padding: const EdgeInsets.symmetric(vertical: 20.0),
                   child: Column(
                     children: <Widget>[
                       GradientText(
@@ -215,7 +223,8 @@ class AudioAppState extends State<AudioApp> {
                         ]),
                         textScaleFactor: 2.5,
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+                        style: TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.w700),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),
@@ -242,7 +251,7 @@ class AudioAppState extends State<AudioApp> {
   }
 
   Widget _buildPlayer() => Container(
-        padding: EdgeInsets.only(top: 15.0, left: 16, right: 16, bottom: 16),
+        padding: EdgeInsets.symmetric(horizontal: 15.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -259,155 +268,176 @@ class AudioAppState extends State<AudioApp> {
                   min: 0.0,
                   max: duration.inMilliseconds.toDouble()),
             if (position != null) _buildProgressView(),
-            Padding(
-              padding: const EdgeInsets.only(top: 18.0),
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      isPlaying
-                          ? Container()
-                          : Container(
-                              decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xff4db6ac),
-                                      //Color(0xff00c754),
-                                      Color(0xff61e88a),
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(100)),
-                              child: IconButton(
-                                onPressed: isPlaying ? null : () => play(),
-                                iconSize: 40.0,
-                                icon: Padding(
-                                  padding: const EdgeInsets.only(left: 2.2),
-                                  child: Icon(MdiIcons.playOutline),
+            Column(
+              children: <Widget>[
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    isPlaying
+                        ? Container(height: 0.0)
+                        : Container(
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xff4db6ac),
+                                    //Color(0xff00c754),
+                                    Color(0xff61e88a),
+                                  ],
                                 ),
-                                color: Color(0xff263238),
-                              ),
+                                borderRadius: BorderRadius.circular(100)),
+                            child: IconButton(
+                              onPressed: isPlaying ? null : () => play(),
+                              iconSize: 40.0,
+                              icon: Icon(Icons.play_arrow),
+                              color: Color(0xff263238),
                             ),
-                      isPlaying
-                          ? Container(
-                              decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xff4db6ac),
-                                      //Color(0xff00c754),
-                                      Color(0xff61e88a),
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(100)),
-                              child: IconButton(
-                                onPressed: isPlaying ? () => pause() : null,
-                                iconSize: 40.0,
-                                icon: Icon(MdiIcons.pause),
-                                color: Color(0xff263238),
-                              ),
-                            )
-                          : Container()
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 40.0),
-                    child: Builder(builder: (context) {
-                      return FlatButton(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
-                          color: Colors.black12,
-                          onPressed: () {
-                            showBottomSheet(
-                                context: context,
-                                builder: (context) => Container(
-                                      decoration: BoxDecoration(color: Color(0xff212c31), borderRadius: BorderRadius.only(topLeft: const Radius.circular(18.0), topRight: const Radius.circular(18.0))),
-                                      height: 400,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.only(top: 10.0),
-                                            child: Row(
-                                              children: <Widget>[
-                                                IconButton(
-                                                    icon: Icon(
-                                                      Icons.arrow_back_ios,
-                                                      color: accent,
-                                                      size: 20,
-                                                    ),
-                                                    onPressed: () => {Navigator.pop(context)}),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(right: 42.0),
-                                                    child: Center(
-                                                      child: Text(
-                                                        "Lyrics",
-                                                        style: TextStyle(
-                                                          color: accent,
-                                                          fontSize: 30,
-                                                          fontWeight: FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
+                          ),
+                    isPlaying
+                        ? Container(
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xff4db6ac),
+                                    //Color(0xff00c754),
+                                    Color(0xff61e88a),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(100)),
+                            child: IconButton(
+                              onPressed: isPlaying ? () => pause() : null,
+                              iconSize: 40.0,
+                              icon: Icon(Icons.pause),
+                              color: Color(0xff263238),
+                            ),
+                          )
+                        : Container()
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 40.0),
+                  child: Builder(builder: (context) {
+                    return FlatButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0)),
+                        color: Colors.black12,
+                        onPressed: () {
+                          showBottomSheet(
+                              context: context,
+                              builder: (context) => Container(
+                                    decoration: BoxDecoration(
+                                        color: Color(0xff212c31),
+                                        borderRadius: BorderRadius.only(
+                                            topLeft:
+                                                const Radius.circular(18.0),
+                                            topRight:
+                                                const Radius.circular(18.0))),
+                                    height: 400,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 10.0),
+                                          child: Row(
+                                            children: <Widget>[
+                                              IconButton(
+                                                  icon: Icon(
+                                                    Icons.arrow_back_ios,
+                                                    color: accent,
+                                                    size: 20,
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          lyrics != "null"
-                                              ? Expanded(
-                                                  flex: 1,
-                                                  child: Padding(
-                                                      padding: const EdgeInsets.all(6.0),
-                                                      child: Center(
-                                                        child: SingleChildScrollView(
-                                                          child: Text(
-                                                            lyrics,
-                                                            style: TextStyle(
-                                                              fontSize: 16.0,
-                                                              color: accentLight,
-                                                            ),
-                                                            textAlign: TextAlign.center,
-                                                          ),
-                                                        ),
-                                                      )),
-                                                )
-                                              : Padding(
-                                                  padding: const EdgeInsets.only(top: 120.0),
+                                                  onPressed: () =>
+                                                      {Navigator.pop(context)}),
+                                              Expanded(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 42.0),
                                                   child: Center(
-                                                    child: Container(
-                                                      child: Text(
-                                                        "No Lyrics available ;(",
-                                                        style: TextStyle(color: accentLight, fontSize: 25),
+                                                    child: Text(
+                                                      "Lyrics",
+                                                      style: TextStyle(
+                                                        color: accent,
+                                                        fontSize: 30,
+                                                        fontWeight:
+                                                            FontWeight.w500,
                                                       ),
                                                     ),
                                                   ),
                                                 ),
-                                        ],
-                                      ),
-                                    ));
-                          },
-                          child: Text(
-                            "Lyrics",
-                            style: TextStyle(color: accent),
-                          ));
-                    }),
-                  )
-                ],
-              ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        lyrics != "null"
+                                            ? Expanded(
+                                                flex: 1,
+                                                child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            6.0),
+                                                    child: Center(
+                                                      child:
+                                                          SingleChildScrollView(
+                                                        child: Text(
+                                                          lyrics,
+                                                          style: TextStyle(
+                                                            fontSize: 16.0,
+                                                            color: accentLight,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        ),
+                                                      ),
+                                                    )),
+                                              )
+                                            : Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 120.0),
+                                                child: Center(
+                                                  child: Container(
+                                                    child: Text(
+                                                      "No Lyrics available ;(",
+                                                      style: TextStyle(
+                                                          color: accentLight,
+                                                          fontSize: 25),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                      ],
+                                    ),
+                                  ));
+                        },
+                        child: Text(
+                          "Lyrics",
+                          style: TextStyle(color: accent),
+                        ));
+                  }),
+                )
+              ],
             ),
           ],
         ),
       );
 
-  Row _buildProgressView() => Row(mainAxisSize: MainAxisSize.min, children: [
-        Text(
-          position != null ? "${positionText ?? ''} ".replaceFirst("0:0", "0") : duration != null ? durationText : '',
-          style: TextStyle(fontSize: 18.0, color: Colors.green[50]),
-        ),
-        Spacer(),
-        Text(
-          position != null ? "${durationText ?? ''}".replaceAll("0:", "") : duration != null ? durationText : '',
-          style: TextStyle(fontSize: 18.0, color: Colors.green[50]),
-        )
-      ]);
+  Widget _buildProgressView() => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Text(
+            position != null
+                ? "${positionText ?? ''} ".replaceFirst("0:0", "0")
+                : duration != null ? durationText : '',
+            style: TextStyle(fontSize: 18.0, color: Colors.green[50]),
+          ),
+          Spacer(),
+          Text(
+            position != null
+                ? "${durationText ?? ''}".replaceAll("0:", "")
+                : duration != null ? durationText : '',
+            style: TextStyle(fontSize: 18.0, color: Colors.green[50]),
+          )
+        ]),
+      );
 }
