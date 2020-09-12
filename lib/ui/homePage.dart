@@ -427,27 +427,42 @@ class AppState extends State<Musify> {
                       ),
                       borderSide: BorderSide(color: accent),
                     ),
-                    suffixIcon: IconButton(
-                      icon: fetchingSongs
-                          ? SizedBox(
-                              height: 18,
-                              width: 18,
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  valueColor:
-                                      AlwaysStoppedAnimation<Color>(accent),
-                                ),
-                              ),
-                            )
-                          : Icon(
-                              Icons.search,
+                    suffixIcon: searchedList.isEmpty
+                        ? IconButton(
+                            icon: fetchingSongs
+                                ? SizedBox(
+                                    height: 18,
+                                    width: 18,
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                accent),
+                                      ),
+                                    ),
+                                  )
+                                : Icon(
+                                    Icons.search,
+                                    color: accent,
+                                  ),
+                            color: accent,
+                            onPressed: () {
+                              search();
+                            },
+                          )
+                        : IconButton(
+                            icon: Icon(
+                              Icons.clear,
                               color: accent,
                             ),
-                      color: accent,
-                      onPressed: () {
-                        search();
-                      },
-                    ),
+                            onPressed: () {
+                              setState(() {
+                                searchedList.clear();
+                                searchBar.clear();
+                                searchBar.clear();
+                                FocusScope.of(context).unfocus();
+                              });
+                            }),
                     border: InputBorder.none,
                     hintText: "Search...",
                     hintStyle: TextStyle(
