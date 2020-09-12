@@ -31,6 +31,11 @@ class AppState extends State<Musify> {
   TextEditingController searchBar = TextEditingController();
   bool fetchingSongs = false;
 
+  getLists() async {
+    var list = await getFeaturedPlaylists();
+    print(list[0].name);
+  }
+
   void initState() {
     super.initState();
 
@@ -522,57 +527,105 @@ class AppState extends State<Musify> {
                         );
                       },
                     )
-                  : FutureBuilder(
-                      future: topSongs(),
-                      builder: (context, data) {
-                        if (data.hasData)
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20.0,
-                                  vertical: 10.0,
-                                ),
-                                child: Text(
-                                  "Top 15 Songs",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    color: accent,
-                                    fontWeight: FontWeight.w600,
+                  : Column(
+                      children: [
+                        FutureBuilder(
+                          future: topSongs(),
+                          builder: (context, data) {
+                            if (data.hasData)
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20.0,
+                                      vertical: 10.0,
+                                    ),
+                                    child: Text(
+                                      "Top 15 Songs",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        fontSize: 22,
+                                        color: accent,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
                                   ),
+                                  Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.25,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: 15,
+                                      itemBuilder: (context, index) {
+                                        return getTopSong(
+                                            data.data[index]["image"],
+                                            data.data[index]["title"],
+                                            data.data[index]["more_info"]
+                                                    ["artistMap"]
+                                                ["primary_artists"][0]["name"],
+                                            data.data[index]["id"]);
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            return Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(35.0),
+                                child: CircularProgressIndicator(
+                                  valueColor:
+                                      new AlwaysStoppedAnimation<Color>(accent),
                                 ),
                               ),
-                              Container(
+                            );
+                          },
+                        ),
+                        FutureBuilder(
+                          future: getFeaturedPlaylists(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              var list = snapshot.data;
+                              return Container(
                                 height:
-                                    MediaQuery.of(context).size.height * 0.25,
+                                    MediaQuery.of(context).size.height * 0.35,
                                 child: ListView.builder(
+                                  itemCount: 10,
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: 15,
                                   itemBuilder: (context, index) {
-                                    return getTopSong(
-                                        data.data[index]["image"],
-                                        data.data[index]["title"],
-                                        data.data[index]["more_info"]
-                                                ["artistMap"]["primary_artists"]
-                                            [0]["name"],
-                                        data.data[index]["id"]);
+                                    return Container(
+                                      padding: EdgeInsets.all(10.0),
+                                      height: 200,
+                                      width: 200,
+                                      child: Column(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            child: CachedNetworkImage(
+                                                imageUrl: list[index].imageUrl),
+                                          ),
+                                          SizedBox(height: 10),
+                                          Text(
+                                            list[index].name,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
                                   },
                                 ),
-                              ),
-                            ],
-                          );
-                        return Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(35.0),
-                            child: CircularProgressIndicator(
-                              valueColor:
-                                  new AlwaysStoppedAnimation<Color>(accent),
-                            ),
-                          ),
-                        );
-                      },
+                              );
+                            } else {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                          },
+                        ),
+                      ],
                     ),
             ],
           ),

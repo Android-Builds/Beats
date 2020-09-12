@@ -18,6 +18,42 @@ String kUrl = "",
 String key = "38346591";
 String decrypt = "";
 
+class PlayList {
+  String id;
+  String name;
+  String url;
+  String followerCount;
+  String username;
+  String imageUrl;
+
+  PlayList(
+      {this.id,
+      this.name,
+      this.url,
+      this.followerCount,
+      this.username,
+      this.imageUrl});
+
+  factory PlayList.fromJson(Map<String, dynamic> json) {
+    return PlayList(
+      id: json['listid'],
+      name: json['listname'],
+      url: json['perma_url']
+          .toString()
+          .replaceAll("&amp;", "&")
+          .replaceAll("&#039;", "'")
+          .replaceAll("&quot;", "\""),
+      followerCount: json['follower_count'],
+      username: json['uid'],
+      imageUrl: json['image']
+          .toString()
+          .replaceAll("&amp;", "&")
+          .replaceAll("&#039;", "'")
+          .replaceAll("&quot;", "\""),
+    );
+  }
+}
+
 Future<List> fetchSongsList(searchQuery) async {
   String searchUrl =
       "https://www.jiosaavn.com/api.php?app_version=5.18.3&api_version=4&readable_version=5.18.3&v=79&_format=json&query=" +
@@ -43,6 +79,36 @@ Future<List> fetchSongsList(searchQuery) async {
         .replaceAll("&quot;", "\"");
   }
   return searchedList;
+}
+
+List<PlayList> playlists = new List<PlayList>();
+
+getFeaturedPlaylists() async {
+  String language = 'hindi'; //TODO: Make language user selectable
+  List<String> listId = List<String>();
+  String url =
+      'https://www.jiosaavn.com/api.php?__call=playlist.getFeaturedPlaylists&_marker=false&language=' +
+          language +
+          '&offset=1&size=250&_format=json';
+  var playlistsJson =
+      await http.get(url, headers: {"Accept": "application/json"});
+  var featuredPlaylists = json.decode(playlistsJson.body);
+  featuredPlaylists = featuredPlaylists['featuredPlaylists'];
+  for (int i = 0; i < 10; i++) {
+    playlists.add(
+        await getPlaylistDetails(featuredPlaylists[i]['listid'].toString()));
+  }
+  return playlists;
+}
+
+getPlaylistDetails(String listId) async {
+  String playlistDetailsUrl =
+      'https://www.jiosaavn.com/api.php?__call=playlist.getDetails&_format=json&cc=in&_marker=0%3F_marker%3D0&listid=' +
+          listId;
+  var playListJSON = await http.get(playlistDetailsUrl,
+      headers: {"Accept": 'application/json;charset=UTF-16'});
+  var playList = json.decode(playListJSON.body);
+  return PlayList.fromJson(playList);
 }
 
 Future<List> topSongs() async {
