@@ -1,5 +1,6 @@
 import 'package:Musify/API/saavn.dart';
 import 'package:Musify/style/appColors.dart';
+import 'package:Musify/ui/albumpage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -42,10 +43,26 @@ class FeaturedPlayListWidget extends StatelessWidget {
                       width: 200,
                       child: Column(
                         children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0),
-                            child: CachedNetworkImage(
-                                imageUrl: list[index].imageUrl),
+                          GestureDetector(
+                            child: Hero(
+                              tag: list[index].name,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10.0),
+                                child: CachedNetworkImage(
+                                  imageUrl: list[index].imageUrl,
+                                ),
+                              ),
+                            ),
+                            onTap: () {
+                              print(list[index].id);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AlbumPage(
+                                            image: list[index].imageUrl,
+                                            tag: list[index].name,
+                                          )));
+                            },
                           ),
                           SizedBox(height: 10),
                           Text(

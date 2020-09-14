@@ -23,7 +23,7 @@ class AppState extends State<Musify> {
   TextEditingController searchBar = TextEditingController();
   bool fetchingSongs = false;
 
-  DownloadEngine downloadEngine = new DownloadEngine();
+  // DownloadEngine downloadEngine = new DownloadEngine();
 
   getLists() async {
     var list = await getFeaturedPlaylists();
@@ -38,27 +38,29 @@ class AppState extends State<Musify> {
       statusBarColor: Colors.transparent,
     ));
 
-    MediaNotification.setListener('play', () {
-      setState(() {
-        playerState = PlayerState.playing;
-        status = 'play';
-        audioPlayer.play(kUrl);
-      });
-    });
+    //TODO: Add Notification control for media
 
-    MediaNotification.setListener('pause', () {
-      setState(() {
-        status = 'pause';
-        audioPlayer.pause();
-      });
-    });
+    // MediaNotification.setListener('play', () {
+    //   setState(() {
+    //     playerState = PlayerState.playing;
+    //     status = 'play';
+    //     audioPlayer.play(kUrl);
+    //   });
+    // });
 
-    MediaNotification.setListener("close", () {
-      audioPlayer.stop();
-      dispose();
-      checker = "Nahi";
-      MediaNotification.hideNotification();
-    });
+    // MediaNotification.setListener('pause', () {
+    //   setState(() {
+    //     status = 'pause';
+    //     audioPlayer.pause();
+    //   });
+    // });
+
+    // MediaNotification.setListener("close", () {
+    //   audioPlayer.stop();
+    //   dispose();
+    //   checker = "Nahi";
+    //   MediaNotification.hideNotification();
+    // });
   }
 
   search() async {
@@ -71,24 +73,24 @@ class AppState extends State<Musify> {
     setState(() {});
   }
 
-  getSongDetails(String id, var context) async {
-    try {
-      await fetchSongDetails(id);
-      print(kUrl);
-    } catch (e) {
-      artist = "Unknown";
-      print(e);
-    }
-    setState(() {
-      checker = "Haa";
-    });
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AudioApp(),
-      ),
-    );
-  }
+  // getSongDetails(String id, var context) async {
+  //   try {
+  //     await fetchSongDetails(id);
+  //     print(kUrl);
+  //   } catch (e) {
+  //     artist = "Unknown";
+  //     print(e);
+  //   }
+  //   setState(() {
+  //     checker = "Haa";
+  //   });
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => AudioApp(),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -107,111 +109,115 @@ class AppState extends State<Musify> {
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
         backgroundColor: Colors.transparent,
+
+        //TODO: Implement mini player
+
         //backgroundColor: Color(0xff384850),
-        bottomNavigationBar: kUrl != ""
-            ? Container(
-                height: 75,
-                //color: Color(0xff1c252a),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(18),
-                        topRight: Radius.circular(18)),
-                    color: Color(0xff1c252a)),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 5.0, bottom: 2),
-                  child: GestureDetector(
-                    onTap: () {
-                      checker = "Nahi";
-                      if (kUrl != "") {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => AudioApp()),
-                        );
-                      }
-                    },
-                    child: Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 8.0,
-                          ),
-                          child: IconButton(
-                            icon: Icon(
-                              MdiIcons.appleKeyboardControl,
-                              size: 22,
-                            ),
-                            onPressed: null,
-                            disabledColor: accent,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 0.0, top: 7, bottom: 7, right: 15),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: CachedNetworkImage(
-                              imageUrl: image,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 0.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                title,
-                                style: TextStyle(
-                                    color: accent,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              Text(
-                                artist,
-                                style:
-                                    TextStyle(color: accentLight, fontSize: 15),
-                              )
-                            ],
-                          ),
-                        ),
-                        Spacer(),
-                        IconButton(
-                          icon: playerState == PlayerState.playing
-                              ? Icon(MdiIcons.pause)
-                              : Icon(MdiIcons.playOutline),
-                          color: accent,
-                          splashColor: Colors.transparent,
-                          onPressed: () {
-                            setState(() {
-                              if (playerState == PlayerState.playing) {
-                                audioPlayer.pause();
-                                playerState = PlayerState.paused;
-                                MediaNotification.showNotification(
-                                    title: title,
-                                    author: artist,
-                                    artUri: image,
-                                    isPlaying: false);
-                              } else if (playerState == PlayerState.paused) {
-                                audioPlayer.play(kUrl);
-                                playerState = PlayerState.playing;
-                                MediaNotification.showNotification(
-                                    title: title,
-                                    author: artist,
-                                    artUri: image,
-                                    isPlaying: true);
-                              }
-                            });
-                          },
-                          iconSize: 45,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            : SizedBox.shrink(),
+        // bottomNavigationBar: kUrl != ""
+        //     ? Container(
+        //         height: 75,
+        //         //color: Color(0xff1c252a),
+        //         decoration: BoxDecoration(
+        //             borderRadius: BorderRadius.only(
+        //                 topLeft: Radius.circular(18),
+        //                 topRight: Radius.circular(18)),
+        //             color: Color(0xff1c252a)),
+        //         child: Padding(
+        //           padding: const EdgeInsets.only(top: 5.0, bottom: 2),
+        //           child: GestureDetector(
+        //             onTap: () {
+        //               checker = "Nahi";
+        //               if (kUrl != "") {
+        //                 Navigator.push(
+        //                   context,
+        //                   MaterialPageRoute(builder: (context) => AudioApp()),
+        //                 );
+        //               }
+        //             },
+        //             child: Row(
+        //               children: <Widget>[
+        //                 Padding(
+        //                   padding: const EdgeInsets.only(
+        //                     top: 8.0,
+        //                   ),
+        //                   child: IconButton(
+        //                     icon: Icon(
+        //                       MdiIcons.appleKeyboardControl,
+        //                       size: 22,
+        //                     ),
+        //                     onPressed: null,
+        //                     disabledColor: accent,
+        //                   ),
+        //                 ),
+        //                 Padding(
+        //                   padding: const EdgeInsets.only(
+        //                       left: 0.0, top: 7, bottom: 7, right: 15),
+        //                   child: ClipRRect(
+        //                     borderRadius: BorderRadius.circular(8.0),
+        //                     child: CachedNetworkImage(
+        //                       imageUrl: image,
+        //                       fit: BoxFit.fill,
+        //                     ),
+        //                   ),
+        //                 ),
+        //                 Padding(
+        //                   padding: const EdgeInsets.only(top: 0.0),
+        //                   child: Column(
+        //                     crossAxisAlignment: CrossAxisAlignment.start,
+        //                     mainAxisAlignment: MainAxisAlignment.center,
+        //                     children: <Widget>[
+        //                       Text(
+        //                         title,
+        //                         style: TextStyle(
+        //                             color: accent,
+        //                             fontSize: 17,
+        //                             fontWeight: FontWeight.w600),
+        //                       ),
+        //                       Text(
+        //                         artist,
+        //                         style:
+        //                             TextStyle(color: accentLight, fontSize: 15),
+        //                       )
+        //                     ],
+        //                   ),
+        //                 ),
+        //                 Spacer(),
+        //                 IconButton(
+        //                   icon: playerState == PlayerState.playing
+        //                       ? Icon(MdiIcons.pause)
+        //                       : Icon(MdiIcons.playOutline),
+        //                   color: accent,
+        //                   splashColor: Colors.transparent,
+        //                   onPressed: () {
+        //                     setState(() {
+        //                       if (playerState == PlayerState.playing) {
+        //                         audioPlayer.pause();
+        //                         playerState = PlayerState.paused;
+        //                         MediaNotification.showNotification(
+        //                             title: title,
+        //                             author: artist,
+        //                             artUri: image,
+        //                             isPlaying: false);
+        //                       } else if (playerState == PlayerState.paused) {
+        //                         audioPlayer.play(kUrl);
+        //                         playerState = PlayerState.playing;
+        //                         MediaNotification.showNotification(
+        //                             title: title,
+        //                             author: artist,
+        //                             artUri: image,
+        //                             isPlaying: true);
+        //                       }
+        //                     });
+        //                   },
+        //                   iconSize: 45,
+        //                 )
+        //               ],
+        //             ),
+        //           ),
+        //         ),
+        //       )
+        //     : SizedBox.shrink(),
+
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
@@ -354,8 +360,8 @@ class AppState extends State<Musify> {
                             child: InkWell(
                               borderRadius: BorderRadius.circular(10.0),
                               onTap: () {
-                                getSongDetails(
-                                    searchedList[index]["id"], context);
+                                // getSongDetails(
+                                //     searchedList[index]["id"], context);
                               },
                               onLongPress: () {
                                 topSongs();
@@ -391,10 +397,10 @@ class AppState extends State<Musify> {
                                     trailing: IconButton(
                                       color: accent,
                                       icon: Icon(MdiIcons.downloadOutline),
-                                      onPressed: () =>
-                                          downloadEngine.downloadSong(
-                                              searchedList[index]["id"],
-                                              context),
+                                      // onPressed: () =>
+                                      //     downloadEngine.downloadSong(
+                                      //         searchedList[index]["id"],
+                                      //         context),
                                     ),
                                   ),
                                 ],
@@ -471,7 +477,7 @@ class AppState extends State<Musify> {
   Widget getTopSong(String image, String title, String subtitle, String id) {
     return InkWell(
       onTap: () {
-        getSongDetails(id, context);
+        // getSongDetails(id, context);
       },
       child: Column(
         children: [
