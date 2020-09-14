@@ -9,6 +9,15 @@ List topSongsList = [];
 String key = "38346591";
 String decrypt = "";
 
+Map hindiTokens = {
+  'Trending today': 'I3kvhipIy73uCJW60TJk1Q__',
+  'Weekly top': '8MT-LQlP35c_',
+};
+Map englishTokens = {
+  'Trending today': 'I3kvhipIy73uCJW60TJk1Q__',
+  'Weekly top': 'LdbVc1Z5i9E_',
+};
+
 class PlayList {
   String id;
   String name;
@@ -74,7 +83,7 @@ Future<List> fetchSongsList(searchQuery) async {
 
 List<PlayList> playlists = new List<PlayList>();
 
-getFeaturedPlaylists() async {
+Future getFeaturedPlaylists() async {
   String language = 'hindi'; //TODO: Make language user selectable
   String url =
       'https://www.jiosaavn.com/api.php?__call=playlist.getFeaturedPlaylists&_marker=false&language=' +
@@ -84,11 +93,11 @@ getFeaturedPlaylists() async {
       await http.get(url, headers: {"Accept": "application/json"});
   var featuredPlaylists = json.decode(playlistsJson.body);
   featuredPlaylists = featuredPlaylists['featuredPlaylists'];
-  for (int i = 0; i < 10; i++) {
-    playlists.add(
-        await getPlaylistDetails(featuredPlaylists[i]['listid'].toString()));
-  }
-  return playlists;
+  // for (int i = 0; i < 10; i++) {
+  //   playlists.add(
+  //       await getPlaylistDetails(featuredPlaylists[i]['listid'].toString()));
+  // }
+  return featuredPlaylists;
 }
 
 getPlaylistDetails(String listId) async {

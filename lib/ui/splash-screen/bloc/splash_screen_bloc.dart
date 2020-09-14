@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:Musify/API/saavn.dart';
+import 'package:Musify/utils/constants.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -18,25 +20,18 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
   ) async* {
     if (event is NavigateToHomeScreenEvent) {
       yield Loading();
-      await Future.delayed(Duration(seconds: 2));
-      //await Future.wait([preLoad()]);
+      //await Future.delayed(Duration(seconds: 2));
+      await Future.wait([preLoad()]);
       yield Loaded();
     }
   }
 }
 
 Future preLoad() {
-  // checkpath();
-  // _initPackageInfo();
-  // return fetchWalls().then((value) {
-  //   wallpapers = value;
-  //   getRandom();
-  //   wallpapers.forEach((walls) {
-  //     if (!categories.contains(walls.collections)) {
-  //       categories.add(walls.collections);
-  //     }
-  //   });
-  //   makeCollections();
-  //   checkfavourites();
-  // });
+  topSongs().then((value) {
+    topsongs = value;
+  });
+  return getFeaturedPlaylists().then((value) {
+    featuredPlaylists = value;
+  });
 }
