@@ -1,5 +1,6 @@
 import 'package:Musify/style/appColors.dart';
 import 'package:Musify/ui/albumpage.dart';
+import 'package:Musify/ui/widgets/morecontent.dart';
 import 'package:Musify/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -11,11 +12,12 @@ class FeaturedPlayListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
           child: Text(
             'Featured PlayLists',
             textAlign: TextAlign.left,
@@ -27,50 +29,57 @@ class FeaturedPlayListWidget extends StatelessWidget {
           ),
         ),
         Container(
-          height: MediaQuery.of(context).size.height * 0.35,
+          height: MediaQuery.of(context).size.height * 0.26,
           child: ListView.builder(
-            itemCount: 10,
+            physics: BouncingScrollPhysics(),
+            itemCount: 11,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              return Container(
-                padding: EdgeInsets.all(10.0),
-                height: 200,
-                width: 200,
-                child: Column(
-                  children: [
-                    GestureDetector(
-                      child: Hero(
-                        tag: featuredPlaylists[index]['listname'],
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: CachedNetworkImage(
-                            imageUrl: featuredPlaylists[index]['image'],
+              if (index < 10) {
+                return Container(
+                  padding: EdgeInsets.all(10.0),
+                  height: size.height * 0.2,
+                  width: size.width * 0.4,
+                  child: Column(
+                    children: [
+                      GestureDetector(
+                        child: Hero(
+                          tag: featuredPlaylists[index]['listname'],
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10.0),
+                            child: CachedNetworkImage(
+                              imageUrl: featuredPlaylists[index]['image'],
+                            ),
                           ),
                         ),
+                        onTap: () {
+                          print(featuredPlaylists[index]['listid']);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AlbumPage(
+                                        image: featuredPlaylists[index]
+                                            ['image'],
+                                        tag: featuredPlaylists[index]
+                                            ['listname'],
+                                      )));
+                        },
                       ),
-                      onTap: () {
-                        print(featuredPlaylists[index]['listid']);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AlbumPage(
-                                      image: featuredPlaylists[index]['image'],
-                                      tag: featuredPlaylists[index]['listname'],
-                                    )));
-                      },
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      featuredPlaylists[index]['listname'],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                      SizedBox(height: 10),
+                      Text(
+                        featuredPlaylists[index]['listname'],
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              );
+                    ],
+                  ),
+                );
+              } else {
+                return MoreContentWidget();
+              }
             },
           ),
         )

@@ -1,5 +1,6 @@
-import 'package:Musify/API/saavn.dart';
 import 'package:Musify/style/appColors.dart';
+import 'package:Musify/ui/widgets/morecontent.dart';
+import 'package:Musify/ui/widgets/moretopsongs.dart';
 import 'package:Musify/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,24 @@ class TopSongs extends StatefulWidget {
 }
 
 class _TopSongsState extends State<TopSongs> {
+  ScrollController controller = new ScrollController();
+  int scrollCount = 0;
+
+  @override
+  void initState() {
+    scrollCount = 0;
+    super.initState();
+    controller.addListener(() {
+      if (controller.position.atEdge && controller.position.pixels != 0) {
+        if (++scrollCount == 2) {
+          scrollCount = 0;
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => MoreTopSongs()));
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -25,7 +44,7 @@ class _TopSongsState extends State<TopSongs> {
             vertical: 10.0,
           ),
           child: Text(
-            "Top 15 Songs",
+            "Top 10 Songs",
             textAlign: TextAlign.left,
             style: TextStyle(
               fontSize: 22,
@@ -35,18 +54,24 @@ class _TopSongsState extends State<TopSongs> {
           ),
         ),
         Container(
-          height: MediaQuery.of(context).size.height * 0.25,
+          height: MediaQuery.of(context).size.height * 0.20,
           child: ListView.builder(
+            controller: controller,
+            physics: BouncingScrollPhysics(),
             scrollDirection: Axis.horizontal,
-            itemCount: 15,
+            itemCount: 11,
             itemBuilder: (context, index) {
-              return getTopSong(
-                topsongs[index]["image"],
-                topsongs[index]["title"],
-                topsongs[index]["more_info"]["artistMap"]["primary_artists"][0]
-                    ["name"],
-                topsongs[index]["id"],
-              );
+              if (index < 10) {
+                return getTopSong(
+                  topsongs[index]["image"],
+                  topsongs[index]["title"],
+                  topsongs[index]["more_info"]["artistMap"]["primary_artists"]
+                      [0]["name"],
+                  topsongs[index]["id"],
+                );
+              } else {
+                return MoreContentWidget();
+              }
             },
           ),
         ),
@@ -62,8 +87,8 @@ class _TopSongsState extends State<TopSongs> {
       child: Column(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height * 0.2,
-            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.height * 0.15,
+            width: MediaQuery.of(context).size.width * 0.30,
             child: Card(
               color: Colors.transparent,
               child: ClipRRect(
