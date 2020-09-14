@@ -1,6 +1,6 @@
+import 'package:Musify/ui/splash-screen/splashscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:Musify/style/appColors.dart';
-import 'package:Musify/ui/homePage.dart';
 
 main() async {
   runApp(
@@ -12,7 +12,7 @@ main() async {
         primaryColor: accent,
         canvasColor: Colors.transparent,
       ),
-      home: Musify(),
+      home: SplashScreen(),
     ),
   );
 }

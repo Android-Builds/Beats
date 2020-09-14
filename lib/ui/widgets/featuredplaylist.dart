@@ -80,7 +80,14 @@ class FeaturedPlayListWidget extends StatelessWidget {
                 ),
               );
             } else {
-              return Center(child: CircularProgressIndicator());
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(35.0),
+                  child: CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(accent),
+                  ),
+                ),
+              );
             }
           },
         ),

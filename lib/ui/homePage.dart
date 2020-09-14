@@ -325,7 +325,6 @@ class AppState extends State<Musify> {
                               setState(() {
                                 searchedList.clear();
                                 searchBar.clear();
-                                searchBar.clear();
                                 FocusScope.of(context).unfocus();
                               });
                             }),
