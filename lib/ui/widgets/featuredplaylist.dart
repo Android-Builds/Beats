@@ -37,7 +37,7 @@ class FeaturedPlayListWidget extends StatelessWidget {
             itemBuilder: (context, index) {
               if (index < 10) {
                 return Container(
-                  padding: EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(5.0),
                   height: size.height * 0.2,
                   width: size.width * 0.4,
                   child: Column(
