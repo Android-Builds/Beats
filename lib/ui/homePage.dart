@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:Musify/model/downloadengine.dart';
 import 'package:Musify/ui/topsongs.dart';
 import 'package:Musify/ui/widgets/featuredplaylist.dart';
+import 'package:Musify/ui/widgets/progressindicator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +21,8 @@ class Musify extends StatefulWidget {
     return AppState();
   }
 }
+
+const TWO_PI = 3.14 * 2;
 
 class AppState extends State<Musify> {
   TextEditingController searchBar = TextEditingController();
@@ -217,6 +220,8 @@ class AppState extends State<Musify> {
 
   double width = 0.0;
 
+  final size = 200.0;
+
   getBody() {
     return Stack(
       children: [
@@ -336,11 +341,10 @@ class AppState extends State<Musify> {
                         TopSongs(),
                         FeaturedPlayListWidget(),
                         SizedBox(height: 40),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: CircularProgressIndicator(
-                            value: 30.0,
-                          ),
+                        SongProgressIndicator(
+                          size: 80,
+                          imageUrl:
+                              'https://images-na.ssl-images-amazon.com/images/I/91SbOZDHMWL.jpg',
                         ),
                         SizedBox(height: 200)
                       ],
