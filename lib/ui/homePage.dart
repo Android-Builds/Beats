@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:Musify/model/downloadengine.dart';
 import 'package:Musify/ui/topsongs.dart';
 import 'package:Musify/ui/widgets/featuredplaylist.dart';
+import 'package:Musify/ui/widgets/nowplayingmini.dart';
 import 'package:Musify/ui/widgets/progressindicator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -341,10 +342,12 @@ class AppState extends State<Musify> {
                         TopSongs(),
                         FeaturedPlayListWidget(),
                         SizedBox(height: 40),
-                        SongProgressIndicator(
-                          size: 80,
-                          imageUrl:
-                              'https://images-na.ssl-images-amazon.com/images/I/91SbOZDHMWL.jpg',
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: NowPlayingMini(
+                            width: MediaQuery.of(context).size.width,
+                            height: 80,
+                          ),
                         ),
                         SizedBox(height: 200)
                       ],
