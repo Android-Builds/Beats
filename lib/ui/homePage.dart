@@ -29,6 +29,7 @@ class AppState extends State<Musify> {
   TextEditingController searchBar = TextEditingController();
   bool fetchingSongs = false;
   bool searchNow = false;
+  Size size;
 
   // DownloadEngine downloadEngine = new DownloadEngine();
 
@@ -101,6 +102,7 @@ class AppState extends State<Musify> {
 
   @override
   Widget build(BuildContext context) {
+    size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
@@ -214,14 +216,27 @@ class AppState extends State<Musify> {
         //       )
         //     : SizedBox.shrink(),
 
-        body: getBody(),
+        body: Stack(
+          children: [
+            getBody(),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                color: Colors.transparent,
+                padding: EdgeInsets.all(25.0),
+                child: NowPlayingMini(
+                  width: size.width,
+                  height: 80,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   double width = 0.0;
-
-  final size = 200.0;
 
   getBody() {
     return Stack(
@@ -341,15 +356,14 @@ class AppState extends State<Musify> {
                         ),
                         TopSongs(),
                         FeaturedPlayListWidget(),
-                        SizedBox(height: 40),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: NowPlayingMini(
-                            width: MediaQuery.of(context).size.width,
-                            height: 80,
-                          ),
-                        ),
-                        SizedBox(height: 200)
+                        Container(height: 500.0, color: Colors.yellow)
+                        // Padding(
+                        //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        //   child: NowPlayingMini(
+                        //     width: MediaQuery.of(context).size.width,
+                        //     height: 80,
+                        //   ),
+                        // ),
                       ],
                     ),
             ],

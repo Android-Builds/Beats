@@ -5,7 +5,8 @@ class NowPlayingMini extends StatefulWidget {
   final double width;
   final double height;
 
-  const NowPlayingMini({Key key, this.width, this.height}) : super(key: key);
+  const NowPlayingMini({Key key, @required this.width, @required this.height})
+      : super(key: key);
   @override
   _NowPlayingMiniState createState() => _NowPlayingMiniState(width, height);
 }
