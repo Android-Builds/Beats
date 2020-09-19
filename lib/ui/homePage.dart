@@ -356,14 +356,6 @@ class AppState extends State<Musify> {
                         ),
                         TopSongs(),
                         FeaturedPlayListWidget(),
-                        Container(height: 500.0, color: Colors.yellow)
-                        // Padding(
-                        //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        //   child: NowPlayingMini(
-                        //     width: MediaQuery.of(context).size.width,
-                        //     height: 80,
-                        //   ),
-                        // ),
                       ],
                     ),
             ],

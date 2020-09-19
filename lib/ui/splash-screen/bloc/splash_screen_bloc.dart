@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:Musify/API/saavn.dart';
+import 'package:Musify/model/player.dart';
 import 'package:Musify/utils/constants.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -20,7 +21,6 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
   ) async* {
     if (event is NavigateToHomeScreenEvent) {
       yield Loading();
-      //await Future.delayed(Duration(seconds: 2));
       await Future.wait([preLoad()]);
       yield Loaded();
     }
@@ -28,6 +28,7 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
 }
 
 Future preLoad() {
+  //initPlayer();
   topSongs().then((value) {
     topsongs = value;
   });

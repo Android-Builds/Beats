@@ -93,10 +93,6 @@ Future getFeaturedPlaylists() async {
       await http.get(url, headers: {"Accept": "application/json"});
   var featuredPlaylists = json.decode(playlistsJson.body);
   featuredPlaylists = featuredPlaylists['featuredPlaylists'];
-  // for (int i = 0; i < 10; i++) {
-  //   playlists.add(
-  //       await getPlaylistDetails(featuredPlaylists[i]['listid'].toString()));
-  // }
   return featuredPlaylists;
 }
 
@@ -197,7 +193,8 @@ Future fetchSongDetails(songId) async {
     details.artist = "Unknown";
   }
 
-  details.lyrics = getLyrics(songJson, songId, details.artist, details.title);
+  details.lyrics =
+      await getLyrics(songJson, songId, details.artist, details.title);
 
   return details;
 }

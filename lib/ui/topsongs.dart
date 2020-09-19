@@ -1,3 +1,6 @@
+import 'package:Musify/API/saavn.dart';
+import 'package:Musify/model/player.dart';
+import 'package:Musify/nowplaying.dart';
 import 'package:Musify/style/appColors.dart';
 import 'package:Musify/ui/widgets/morecontent.dart';
 import 'package:Musify/ui/widgets/moretopsongs.dart';
@@ -82,7 +85,11 @@ class _TopSongsState extends State<TopSongs> {
   Widget getTopSong(String image, String title, String subtitle, String id) {
     return InkWell(
       onTap: () {
-        // getSongDetails(id, context);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    NowPlaying(songId: id, newSong: !(currentSongId == id))));
       },
       child: Column(
         children: [
