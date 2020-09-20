@@ -1,4 +1,4 @@
-import 'package:Musify/ui/homePage.dart';
+import 'package:Beats/ui/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

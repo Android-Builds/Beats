@@ -1,5 +1,5 @@
-import 'package:Musify/API/saavn.dart';
-import 'package:Musify/model/player.dart';
+import 'package:Beats/API/saavn.dart';
+import 'package:Beats/model/player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -18,10 +18,22 @@ class _NowPlayingState extends State<NowPlaying> {
 
   _NowPlayingState(this.songId, this.newSong);
 
+  int session;
+
+  getSession() async {
+    //     try {
+    //   final int result = await _channel.invokeMethod('getSessionID');
+    //   session = result ;
+    // } on PlatformException catch (e) {
+    //   session = null;
+    // }
+  }
+
   @override
   void initState() {
     super.initState();
     currentSongId = songId;
+    // player.
   }
 
   @override
@@ -75,7 +87,7 @@ class _NowPlayingState extends State<NowPlaying> {
             } else if (snapshot.hasError) {
               return Text('Error');
             } else {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             }
           },
         ),

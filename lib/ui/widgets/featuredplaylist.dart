@@ -1,7 +1,7 @@
-import 'package:Musify/style/appColors.dart';
-import 'package:Musify/ui/albumpage.dart';
-import 'package:Musify/ui/widgets/morecontent.dart';
-import 'package:Musify/utils/constants.dart';
+import 'package:Beats/style/appColors.dart';
+import 'package:Beats/ui/albumpage.dart';
+import 'package:Beats/ui/widgets/morecontent.dart';
+import 'package:Beats/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 

@@ -1,4 +1,4 @@
-import 'package:Musify/ui/widgets/progressindicator.dart';
+import 'package:Beats/ui/widgets/progressindicator.dart';
 import 'package:flutter/material.dart';
 
 class NowPlayingMini extends StatefulWidget {

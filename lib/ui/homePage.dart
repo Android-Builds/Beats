@@ -1,20 +1,14 @@
-import 'dart:async';
 import 'dart:ui';
-import 'package:Musify/model/downloadengine.dart';
-import 'package:Musify/ui/topsongs.dart';
-import 'package:Musify/ui/widgets/featuredplaylist.dart';
-import 'package:Musify/ui/widgets/nowplayingmini.dart';
-import 'package:Musify/ui/widgets/progressindicator.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:Beats/API/saavn.dart';
+import 'package:Beats/style/appColors.dart';
+import 'package:Beats/ui/topsongs.dart';
+import 'package:Beats/ui/widgets/featuredplaylist.dart';
+import 'package:Beats/ui/widgets/nowplayingmini.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:Musify/API/saavn.dart';
-import 'package:Musify/music.dart';
-import 'package:Musify/style/appColors.dart';
-import 'package:Musify/ui/aboutPage.dart';
+
+import 'aboutPage.dart';
 
 class Musify extends StatefulWidget {
   @override
@@ -277,7 +271,7 @@ class AppState extends State<Musify> {
                                     leading: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Icon(
-                                        MdiIcons.musicNoteOutline,
+                                        Icons.music_note,
                                         size: 30,
                                         color: accent,
                                       ),
@@ -297,7 +291,7 @@ class AppState extends State<Musify> {
                                     ),
                                     trailing: IconButton(
                                       color: accent,
-                                      icon: Icon(MdiIcons.downloadOutline),
+                                      icon: Icon(Icons.download_done_outlined),
                                       // onPressed: () =>
                                       //     downloadEngine.downloadSong(
                                       //         searchedList[index]["id"],
@@ -341,7 +335,7 @@ class AppState extends State<Musify> {
                             IconButton(
                               iconSize: 26,
                               alignment: Alignment.center,
-                              icon: Icon(MdiIcons.dotsVertical),
+                              icon: Icon(Icons.more_vert),
                               color: accent,
                               onPressed: () => {
                                 Navigator.push(

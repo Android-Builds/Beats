@@ -1,6 +1,6 @@
-import 'package:Musify/ui/splash-screen/splashscreen.dart';
 import 'package:flutter/material.dart';
-import 'package:Musify/style/appColors.dart';
+
+import 'ui/splash-screen/splashscreen.dart';
 
 main() async {
   runApp(

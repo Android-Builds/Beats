@@ -1,8 +1,7 @@
+import 'package:Beats/helper/utils.dart';
+import 'package:Beats/style/appColors.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:Musify/helper/utils.dart';
-import 'package:Musify/style/appColors.dart';
 
 class AboutPage extends StatelessWidget {
   @override
@@ -124,7 +123,7 @@ class AboutCards extends StatelessWidget {
                   children: <Widget>[
                     IconButton(
                       icon: Icon(
-                        MdiIcons.telegram,
+                        Icons.person,
                         color: accentLight,
                       ),
                       tooltip: 'Contact on Telegram',
@@ -134,7 +133,7 @@ class AboutCards extends StatelessWidget {
                     ),
                     IconButton(
                       icon: Icon(
-                        MdiIcons.twitter,
+                        Icons.person,
                         color: accentLight,
                       ),
                       tooltip: 'Contact on Twitter',
@@ -181,7 +180,7 @@ class AboutCards extends StatelessWidget {
                   children: <Widget>[
                     IconButton(
                       icon: Icon(
-                        MdiIcons.telegram,
+                        Icons.person,
                         color: accentLight,
                       ),
                       tooltip: 'Contact on Telegram',
@@ -191,7 +190,7 @@ class AboutCards extends StatelessWidget {
                     ),
                     IconButton(
                       icon: Icon(
-                        MdiIcons.twitter,
+                        Icons.person,
                         color: accentLight,
                       ),
                       tooltip: 'Contact on Twitter',
@@ -238,7 +237,7 @@ class AboutCards extends StatelessWidget {
                   children: <Widget>[
                     IconButton(
                       icon: Icon(
-                        MdiIcons.telegram,
+                        Icons.person,
                         color: accentLight,
                       ),
                       tooltip: 'Contact on Telegram',
@@ -248,7 +247,7 @@ class AboutCards extends StatelessWidget {
                     ),
                     IconButton(
                       icon: Icon(
-                        MdiIcons.twitter,
+                        Icons.person,
                         color: accentLight,
                       ),
                       tooltip: 'Contact on Twitter',
@@ -295,7 +294,7 @@ class AboutCards extends StatelessWidget {
                   children: <Widget>[
                     IconButton(
                       icon: Icon(
-                        MdiIcons.telegram,
+                        Icons.person,
                         color: accentLight,
                       ),
                       tooltip: 'Contact on Telegram',
@@ -305,7 +304,7 @@ class AboutCards extends StatelessWidget {
                     ),
                     IconButton(
                       icon: Icon(
-                        MdiIcons.twitter,
+                        Icons.person,
                         color: accentLight,
                       ),
                       tooltip: 'Contact on Twitter',

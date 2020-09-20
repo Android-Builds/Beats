@@ -1,10 +1,10 @@
-import 'package:Musify/API/saavn.dart';
-import 'package:Musify/model/player.dart';
-import 'package:Musify/nowplaying.dart';
-import 'package:Musify/style/appColors.dart';
-import 'package:Musify/ui/widgets/morecontent.dart';
-import 'package:Musify/ui/widgets/moretopsongs.dart';
-import 'package:Musify/utils/constants.dart';
+import 'package:Beats/API/saavn.dart';
+import 'package:Beats/model/player.dart';
+import 'package:Beats/nowplaying.dart';
+import 'package:Beats/style/appColors.dart';
+import 'package:Beats/ui/widgets/morecontent.dart';
+import 'package:Beats/ui/widgets/moretopsongs.dart';
+import 'package:Beats/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
