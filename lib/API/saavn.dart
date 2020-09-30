@@ -125,8 +125,11 @@ Future<List> topSongs() async {
             .replaceAll("&amp;", "&")
             .replaceAll("&#039;", "'")
             .replaceAll("&quot;", "\"");
-    topSongsList[i]['image'] =
-        topSongsList[i]['image'].toString().replaceAll("150x150", "500x500");
+    topSongsList[i]['image'] = topSongsList[i]['image']
+        .toString()
+        .replaceAll("150x150", "500x500")
+        .replaceAll('http', 'https')
+        .replaceAll('httpss', 'https');
   }
   return topSongsList;
 }
@@ -174,8 +177,12 @@ Future fetchSongDetails(songId) async {
       .replaceAll("&amp;", "&")
       .replaceAll("&#039;", "'")
       .replaceAll("&quot;", "\"");
-  details.image =
-      songJson[songId]["image"].toString().replaceAll("150x150", "500x500");
+  details.image = songJson[songId]["image"]
+      .toString()
+      .replaceAll('http', 'https')
+      .replaceAll('httpss', 'https')
+      .replaceAll("150x150", "500x500");
+  print(details.image);
   details.album = songJson[songId]["more_info"]["album"]
       .toString()
       .replaceAll("&quot;", "\"")

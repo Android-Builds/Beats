@@ -1,12 +1,12 @@
-import 'package:Beats/API/saavn.dart';
 import 'package:Beats/model/player.dart';
-import 'package:Beats/nowplaying.dart';
 import 'package:Beats/style/appColors.dart';
 import 'package:Beats/ui/widgets/morecontent.dart';
 import 'package:Beats/ui/widgets/moretopsongs.dart';
 import 'package:Beats/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+
+import '../nowplaying.dart';
 
 class TopSongs extends StatefulWidget {
   const TopSongs({

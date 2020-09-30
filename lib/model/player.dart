@@ -1,5 +1,5 @@
-import 'package:Musify/API/saavn.dart';
-import 'package:audioplayer/audioplayer.dart';
+import 'package:Beats/API/saavn.dart';
+import 'package:just_audio/just_audio.dart';
 
 enum PlayerState { stopped, playing, paused }
 

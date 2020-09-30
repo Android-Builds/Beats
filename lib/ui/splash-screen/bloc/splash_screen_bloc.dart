@@ -1,7 +1,6 @@
 import 'dart:async';
-import 'package:Musify/API/saavn.dart';
-import 'package:Musify/model/player.dart';
-import 'package:Musify/utils/constants.dart';
+import 'package:Beats/API/saavn.dart';
+import 'package:Beats/utils/constants.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:permission_handler/permission_handler.dart';
