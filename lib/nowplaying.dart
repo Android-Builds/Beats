@@ -1,107 +1,14 @@
-// import 'package:Beats/API/saavn.dart';
-// import 'package:Beats/model/player.dart';
-// import 'package:cached_network_image/cached_network_image.dart';
-// import 'package:flutter/material.dart';
-
-// class NowPlaying extends StatefulWidget {
-//   final String songId;
-//   final bool newSong;
-//   const NowPlaying({Key key, @required this.songId, this.newSong = false})
-//       : super(key: key);
-//   @override
-//   _NowPlayingState createState() => _NowPlayingState(songId, newSong);
-// }
-
-// class _NowPlayingState extends State<NowPlaying> {
-//   final String songId;
-//   final bool newSong;
-
-//   _NowPlayingState(this.songId, this.newSong);
-
-//   int session;
-
-//   getSession() async {
-//     //     try {
-//     //   final int result = await _channel.invokeMethod('getSessionID');
-//     //   session = result ;
-//     // } on PlatformException catch (e) {
-//     //   session = null;
-//     // }
-//   }
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     currentSongId = songId;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//       child: Scaffold(
-//         body: FutureBuilder(
-//           future: newSong
-//               ? fetchSongDetails(songId)
-//               : Future.delayed(Duration(microseconds: 1)),
-//           builder: (context, snapshot) {
-//             if (snapshot.hasData || !newSong) {
-//               song = newSong ? snapshot.data : song;
-//               return Center(
-//                 child: Column(
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   children: [
-//                     Container(
-//                       height: 270,
-//                       width: 270,
-//                       decoration: BoxDecoration(
-//                         shape: BoxShape.circle,
-//                         image: DecorationImage(
-//                           image: CachedNetworkImageProvider(song.image),
-//                         ),
-//                       ),
-//                     ),
-//                     Padding(
-//                       padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
-//                       child: Text(
-//                         song.title,
-//                         style: TextStyle(
-//                           fontSize: 30.0,
-//                           fontWeight: FontWeight.bold,
-//                         ),
-//                       ),
-//                     ),
-//                     Padding(
-//                       padding: EdgeInsets.only(bottom: 40.0),
-//                       child: Text(
-//                         song.artist,
-//                         style: TextStyle(
-//                           fontSize: 16.0,
-//                           fontWeight: FontWeight.w400,
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               );
-//             } else if (snapshot.hasError) {
-//               return Text('Error');
-//             } else {
-//               return Center(child: CircularProgressIndicator());
-//             }
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
-
+import 'dart:async';
 import 'dart:math';
 
 import 'package:Beats/API/saavn.dart';
+import 'package:Beats/model/player.dart';
+import 'package:Beats/visualizer.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:just_audio/just_audio.dart';
 
 class NowPlaying extends StatefulWidget {
@@ -118,40 +25,6 @@ class _NowPlayingState extends State<NowPlaying> {
   final bool newSong;
 
   _NowPlayingState(this.songId, this.newSong);
-  AudioPlayer _player;
-  ConcatenatingAudioSource _playlist1 = ConcatenatingAudioSource(children: [
-    AudioSource.uri(
-      Uri.parse(
-          "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3"),
-      tag: AudioMetadata(
-        album: "Science Friday",
-        title: "A Salute To Head-Scratching Science (5 seconds)",
-        artwork:
-            "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg",
-      ),
-    ),
-    AudioSource.uri(
-      Uri.parse(
-          "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3"),
-      tag: AudioMetadata(
-        album: "Science Friday",
-        title: "A Salute To Head-Scratching Science",
-        artwork:
-            "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg",
-      ),
-    ),
-    AudioSource.uri(
-      Uri.parse("https://s3.amazonaws.com/scifri-segments/scifri201711241.mp3"),
-      tag: AudioMetadata(
-        album: "Science Friday",
-        title: "From Cat Rheology To Operatic Incompetence",
-        artwork:
-            "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg",
-      ),
-    ),
-  ]);
-
-  ConcatenatingAudioSource _playlist;
 
   // Future createPlaylist() async {
   //   SongDetails song = await fetchSongDetails(songId);
@@ -166,10 +39,18 @@ class _NowPlayingState extends State<NowPlaying> {
   //   return _playlist;
   // }
 
+  bool change = false;
+  bool volume = false;
+
   @override
   void initState() {
     super.initState();
-    _player = AudioPlayer();
+    if (player == null) {
+      player = AudioPlayer();
+    }
+    if (newSong && player.playing) {
+      player.stop();
+    }
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.black,
     ));
@@ -177,31 +58,35 @@ class _NowPlayingState extends State<NowPlaying> {
   }
 
   _init() async {
+    print(newSong);
     final session = await AudioSession.instance;
-    await session.configure(AudioSessionConfiguration.speech());
-    SongDetails song = await fetchSongDetails(songId);
-    _playlist = ConcatenatingAudioSource(children: [
-      AudioSource.uri(Uri.parse(song.kUrl),
-          tag: AudioMetadata(
-            album: song.album,
-            title: song.title,
-            artwork: song.image,
-          ))
-    ]);
-    try {
-      await _player.load(_playlist);
-      setState(() {
-        _player.play();
-      });
-    } catch (e) {
-      // catch load errors: 404, invalid url ...
-      print("An error occured $e");
+    await session.configure(AudioSessionConfiguration.music());
+    if (newSong || playlist == null) {
+      SongDetails song = await fetchSongDetails(songId);
+      playlist = ConcatenatingAudioSource(children: [
+        AudioSource.uri(Uri.parse(song.kUrl),
+            tag: AudioMetadata(
+              album: song.album,
+              title: song.title,
+              artwork: song.image,
+            ))
+      ]);
+      try {
+        await player.load(playlist);
+        setState(() {
+          player.play();
+        });
+      } catch (e) {
+        // catch load errors: 404, invalid url ...
+        print("An error occured $e");
+      }
     }
+    currentSongId = songId;
   }
 
   @override
   void dispose() {
-    _player.dispose();
+    //player.dispose();
     super.dispose();
   }
 
@@ -209,34 +94,40 @@ class _NowPlayingState extends State<NowPlaying> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: _playlist != null
+        child: playlist != null
             ? Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   StreamBuilder<SequenceState>(
-                    stream: _player.sequenceStateStream,
+                    stream: player.sequenceStateStream,
                     builder: (context, snapshot) {
                       final state = snapshot.data;
                       if (state?.sequence?.isEmpty ?? true) return SizedBox();
                       final metadata = state.currentSource.tag as AudioMetadata;
-                      return Center(
-                          child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      return Column(
                         children: [
-                          Container(
-                            height: 270,
-                            width: 270,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: CachedNetworkImageProvider(
-                                    metadata.artwork),
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Container(
+                                height: 320,
+                                width: 320,
+                                child: Vis(),
                               ),
-                            ),
+                              Container(
+                                height: 200,
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: CachedNetworkImageProvider(
+                                        metadata.artwork),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           Padding(
-                            padding: EdgeInsets.only(top: 30.0, bottom: 20.0),
+                            padding: EdgeInsets.only(top: 20.0, bottom: 15.0),
                             child: Text(
                               metadata.title ?? '',
                               style: TextStyle(
@@ -246,7 +137,7 @@ class _NowPlayingState extends State<NowPlaying> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(bottom: 40.0),
+                            padding: EdgeInsets.only(bottom: 20.0),
                             child: Text(
                               metadata.album ?? '',
                               style: TextStyle(
@@ -256,17 +147,17 @@ class _NowPlayingState extends State<NowPlaying> {
                             ),
                           ),
                         ],
-                      ));
+                      );
                     },
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: StreamBuilder<Duration>(
-                      stream: _player.durationStream,
+                      stream: player.durationStream,
                       builder: (context, snapshot) {
                         final duration = snapshot.data ?? Duration.zero;
                         return StreamBuilder<Duration>(
-                          stream: _player.positionStream,
+                          stream: player.positionStream,
                           builder: (context, snapshot) {
                             var position = snapshot.data ?? Duration.zero;
                             if (position > duration) {
@@ -276,7 +167,7 @@ class _NowPlayingState extends State<NowPlaying> {
                               duration: duration,
                               position: position,
                               onChangeEnd: (newPosition) {
-                                _player.seek(newPosition);
+                                player.seek(newPosition);
                               },
                             );
                           },
@@ -284,63 +175,78 @@ class _NowPlayingState extends State<NowPlaying> {
                       },
                     ),
                   ),
-                  ControlButtons(_player),
-                  SizedBox(height: 8.0),
-                  Row(
-                    children: [
-                      StreamBuilder<LoopMode>(
-                        stream: _player.loopModeStream,
-                        builder: (context, snapshot) {
-                          final loopMode = snapshot.data ?? LoopMode.off;
-                          const icons = [
-                            Icon(Icons.repeat, color: Colors.grey),
-                            Icon(Icons.repeat, color: Colors.orange),
-                            Icon(Icons.repeat_one, color: Colors.orange),
-                          ];
-                          const cycleModes = [
-                            LoopMode.off,
-                            LoopMode.all,
-                            LoopMode.one,
-                          ];
-                          final index = cycleModes.indexOf(loopMode);
-                          return IconButton(
-                            icon: icons[index],
-                            onPressed: () {
-                              _player.setLoopMode(cycleModes[
-                                  (cycleModes.indexOf(loopMode) + 1) %
-                                      cycleModes.length]);
-                            },
-                          );
-                        },
-                      ),
-                      Expanded(
-                        child: Text(
-                          "Playlist",
-                          // style: Theme.of(context).textTheme.headline6,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      StreamBuilder<bool>(
-                        stream: _player.shuffleModeEnabledStream,
-                        builder: (context, snapshot) {
-                          final shuffleModeEnabled = snapshot.data ?? false;
-                          return IconButton(
-                            icon: shuffleModeEnabled
-                                ? Icon(Icons.shuffle, color: Colors.orange)
-                                : Icon(Icons.shuffle, color: Colors.grey),
-                            onPressed: () {
-                              _player
-                                  .setShuffleModeEnabled(!shuffleModeEnabled);
-                            },
-                          );
-                        },
-                      ),
-                    ],
+                  SizedBox(height: 30.0),
+                  ControlButtons(player),
+                  Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0)),
+                    margin:
+                        EdgeInsets.symmetric(horizontal: 40.0, vertical: 40.0),
+                    child: Container(
+                      height: 80.0,
+                      width: MediaQuery.of(context).size.width,
+                      margin: EdgeInsets.symmetric(horizontal: 30.0),
+                      child: !change
+                          ? Row(
+                              children: [
+                                IconButton(
+                                  icon:
+                                      Icon(MaterialCommunityIcons.volume_high),
+                                  onPressed: () {
+                                    Timer(Duration(seconds: 3), () {
+                                      change = !change;
+                                      setState(() {});
+                                    });
+                                    setState(() {
+                                      volume = true;
+                                      change = !change;
+                                    });
+                                  },
+                                ),
+                                Spacer(),
+                                IconButton(
+                                  icon: Icon(Icons.playlist_play),
+                                  onPressed: null,
+                                ),
+                                Spacer(),
+                                StreamBuilder<double>(
+                                  stream: player.speedStream,
+                                  builder: (context, snapshot) => IconButton(
+                                    icon: Text(
+                                        "${snapshot.data?.toStringAsFixed(1)}x",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    onPressed: () {
+                                      Timer(Duration(seconds: 3), () {
+                                        change = !change;
+                                        setState(() {});
+                                      });
+                                      setState(() {
+                                        volume = false;
+                                        change = !change;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            )
+                          : _showSlider(
+                              context: context,
+                              divisions: 10,
+                              min: volume ? 0.0 : 0.5,
+                              max: volume ? 1.0 : 1.5,
+                              stream: volume
+                                  ? player.volumeStream
+                                  : player.speedStream,
+                              onChanged:
+                                  volume ? player.setVolume : player.setSpeed,
+                            ),
+                    ),
                   ),
                   // Container(
                   //   height: 240.0,
                   //   child: StreamBuilder<SequenceState>(
-                  //     stream: _player.sequenceStateStream,
+                  //     stream: player.sequenceStateStream,
                   //     builder: (context, snapshot) {
                   //       final state = snapshot.data;
                   //       final sequence = state?.sequence ?? [];
@@ -353,7 +259,7 @@ class _NowPlayingState extends State<NowPlaying> {
                   //           child: ListTile(
                   //             title: Text(sequence[index].tag.title),
                   //             onTap: () {
-                  //               _player.seek(Duration.zero, index: index);
+                  //               player.seek(Duration.zero, index: index);
                   //             },
                   //           ),
                   //         ),
@@ -379,17 +285,27 @@ class ControlButtons extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        IconButton(
-          icon: Icon(Icons.volume_up),
-          onPressed: () {
-            _showSliderDialog(
-              context: context,
-              title: "Adjust volume",
-              divisions: 10,
-              min: 0.0,
-              max: 1.0,
-              stream: player.volumeStream,
-              onChanged: player.setVolume,
+        StreamBuilder<LoopMode>(
+          stream: player.loopModeStream,
+          builder: (context, snapshot) {
+            final loopMode = snapshot.data ?? LoopMode.off;
+            const icons = [
+              Icon(MaterialIcons.repeat, color: Colors.grey),
+              Icon(Icons.repeat, color: Colors.orange),
+              Icon(Icons.repeat_one, color: Colors.orange),
+            ];
+            const cycleModes = [
+              LoopMode.off,
+              LoopMode.all,
+              LoopMode.one,
+            ];
+            final index = cycleModes.indexOf(loopMode);
+            return IconButton(
+              icon: icons[index],
+              onPressed: () {
+                player.setLoopMode(cycleModes[
+                    (cycleModes.indexOf(loopMode) + 1) % cycleModes.length]);
+              },
             );
           },
         ),
@@ -439,23 +355,19 @@ class ControlButtons extends StatelessWidget {
             onPressed: player.hasNext ? player.seekToNext : null,
           ),
         ),
-        StreamBuilder<double>(
-          stream: player.speedStream,
-          builder: (context, snapshot) => IconButton(
-            icon: Text("${snapshot.data?.toStringAsFixed(1)}x",
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            onPressed: () {
-              _showSliderDialog(
-                context: context,
-                title: "Adjust speed",
-                divisions: 10,
-                min: 0.5,
-                max: 1.5,
-                stream: player.speedStream,
-                onChanged: player.setSpeed,
-              );
-            },
-          ),
+        StreamBuilder<bool>(
+          stream: player.shuffleModeEnabledStream,
+          builder: (context, snapshot) {
+            final shuffleModeEnabled = snapshot.data ?? false;
+            return IconButton(
+              icon: shuffleModeEnabled
+                  ? Icon(Icons.shuffle, color: Colors.orange)
+                  : Icon(Icons.shuffle, color: Colors.grey),
+              onPressed: () {
+                player.setShuffleModeEnabled(!shuffleModeEnabled);
+              },
+            );
+          },
         ),
       ],
     );
@@ -489,6 +401,8 @@ class _SeekBarState extends State<SeekBar> {
         SliderTheme(
           data: SliderThemeData(
             thumbShape: SliderComponentShape.noOverlay,
+            inactiveTrackColor: Colors.grey[500],
+            activeTrackColor: Color(0xffa5ecd7),
           ),
           child: Slider(
             min: 0.0,
@@ -511,14 +425,26 @@ class _SeekBarState extends State<SeekBar> {
             },
           ),
         ),
+        // Positioned(
+        //   right: 25.0,
+        //   bottom: 0.0,
+        //   child: Text(
+        //       RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
+        //               .firstMatch("$_remaining")
+        //               ?.group(1) ??
+        //           '$_remaining',
+        //       style: Theme.of(context).textTheme.caption),
+        // ),
         Positioned(
           right: 25.0,
           bottom: 0.0,
-          child: Text(
-              RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
-                      .firstMatch("$_remaining")
-                      ?.group(1) ??
-                  '$_remaining',
+          child: Text('$_remaining'.substring(3, 7),
+              style: Theme.of(context).textTheme.caption),
+        ),
+        Positioned(
+          left: 25.0,
+          bottom: 0.0,
+          child: Text(widget.duration.toString().substring(3, 7),
               style: Theme.of(context).textTheme.caption),
         ),
       ],
@@ -563,6 +489,42 @@ _showSliderDialog({
             ],
           ),
         ),
+      ),
+    ),
+  );
+}
+
+_showSlider(
+    {BuildContext context,
+    int divisions,
+    double min,
+    double max,
+    String valueSuffix = '',
+    Stream<double> stream,
+    ValueChanged<double> onChanged}) {
+  return StreamBuilder<double>(
+    stream: stream,
+    builder: (context, snapshot) => Container(
+      height: 100.0,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            '${snapshot.data?.toStringAsFixed(1)}$valueSuffix',
+            style: TextStyle(
+              fontFamily: 'Fixed',
+              fontWeight: FontWeight.w400,
+              fontSize: 20.0,
+            ),
+          ),
+          Slider(
+            divisions: divisions,
+            min: min,
+            max: max,
+            value: snapshot.data ?? 1.0,
+            onChanged: onChanged,
+          ),
+        ],
       ),
     ),
   );
