@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:Beats/API/saavn.dart';
+import 'package:Beats/model/player.dart';
 import 'package:Beats/style/appColors.dart';
 import 'package:Beats/ui/topsongs.dart';
 import 'package:Beats/ui/widgets/featuredplaylist.dart';
@@ -215,14 +216,16 @@ class AppState extends State<Musify> {
             getBody(),
             Align(
               alignment: Alignment.bottomCenter,
-              child: Container(
-                color: Colors.transparent,
-                padding: EdgeInsets.all(25.0),
-                child: NowPlayingMini(
-                  width: size.width,
-                  height: 80,
-                ),
-              ),
+              child: player != null
+                  ? Container(
+                      color: Colors.transparent,
+                      padding: EdgeInsets.all(25.0),
+                      child: NowPlayingMini(
+                        width: size.width,
+                        height: 80,
+                      ),
+                    )
+                  : Container(height: 0.0),
             ),
           ],
         ),
