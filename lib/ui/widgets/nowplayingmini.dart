@@ -45,11 +45,7 @@ class _NowPlayingMiniState extends State<NowPlayingMini> {
                 ],
               ),
             )),
-        SongProgressIndicator(
-          size: height + 10.0,
-          imageUrl:
-              'https://images-na.ssl-images-amazon.com/images/I/91SbOZDHMWL.jpg',
-        ),
+        SongProgressIndicator(size: height + 10.0),
       ],
     );
   }

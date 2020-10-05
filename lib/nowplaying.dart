@@ -58,11 +58,10 @@ class _NowPlayingState extends State<NowPlaying> {
   }
 
   _init() async {
-    print(newSong);
     final session = await AudioSession.instance;
     await session.configure(AudioSessionConfiguration.music());
     if (newSong || playlist == null) {
-      SongDetails song = await fetchSongDetails(songId);
+      song = await fetchSongDetails(songId);
       playlist = ConcatenatingAudioSource(children: [
         AudioSource.uri(Uri.parse(song.kUrl),
             tag: AudioMetadata(
@@ -109,13 +108,13 @@ class _NowPlayingState extends State<NowPlaying> {
                             alignment: Alignment.center,
                             children: [
                               Container(
-                                height: 320,
-                                width: 320,
+                                height: 350,
+                                width: 350,
                                 child: Vis(),
                               ),
                               Container(
-                                height: 200,
-                                width: 200,
+                                height: 250,
+                                width: 250,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   image: DecorationImage(
@@ -127,7 +126,7 @@ class _NowPlayingState extends State<NowPlaying> {
                             ],
                           ),
                           Padding(
-                            padding: EdgeInsets.only(top: 20.0, bottom: 15.0),
+                            padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
                             child: Text(
                               metadata.title ?? '',
                               style: TextStyle(
@@ -175,7 +174,7 @@ class _NowPlayingState extends State<NowPlaying> {
                       },
                     ),
                   ),
-                  SizedBox(height: 30.0),
+                  SizedBox(height: 20.0),
                   ControlButtons(player),
                   Card(
                     shape: RoundedRectangleBorder(
