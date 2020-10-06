@@ -28,6 +28,7 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
 
 Future preLoad() {
   //initPlayer();
+  miniPlayer = new StreamController();
   topSongs().then((value) {
     topsongs = value;
   });

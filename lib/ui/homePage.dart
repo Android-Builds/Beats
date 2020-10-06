@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:Beats/API/saavn.dart';
 import 'package:Beats/model/player.dart';
+import 'package:Beats/nowplaying.dart';
 import 'package:Beats/style/appColors.dart';
 import 'package:Beats/ui/topsongs.dart';
 import 'package:Beats/ui/widgets/featuredplaylist.dart';
 import 'package:Beats/ui/widgets/nowplayingmini.dart';
+import 'package:Beats/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
@@ -35,6 +38,9 @@ class AppState extends State<Musify> {
 
   void initState() {
     super.initState();
+    miniPlayer.stream.listen((event) {
+      setState(() {});
+    });
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: Color(0xff1c252a),
@@ -76,24 +82,18 @@ class AppState extends State<Musify> {
     setState(() {});
   }
 
-  // getSongDetails(String id, var context) async {
-  //   try {
-  //     await fetchSongDetails(id);
-  //     print(kUrl);
-  //   } catch (e) {
-  //     artist = "Unknown";
-  //     print(e);
-  //   }
-  //   setState(() {
-  //     checker = "Haa";
-  //   });
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => AudioApp(),
-  //     ),
-  //   );
-  // }
+  openNowPlaying() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => NowPlaying(songId: currentSongId)));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    miniPlayer = new StreamController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,130 +102,24 @@ class AppState extends State<Musify> {
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
         // backgroundColor: Colors.transparent,
-
-        //TODO: Implement mini player
-
-        //backgroundColor: Color(0xff384850),
-        // bottomNavigationBar: kUrl != ""
-        //     ? Container(
-        //         height: 75,
-        //         //color: Color(0xff1c252a),
-        //         decoration: BoxDecoration(
-        //             borderRadius: BorderRadius.only(
-        //                 topLeft: Radius.circular(18),
-        //                 topRight: Radius.circular(18)),
-        //             color: Color(0xff1c252a)),
-        //         child: Padding(
-        //           padding: const EdgeInsets.only(top: 5.0, bottom: 2),
-        //           child: GestureDetector(
-        //             onTap: () {
-        //               checker = "Nahi";
-        //               if (kUrl != "") {
-        //                 Navigator.push(
-        //                   context,
-        //                   MaterialPageRoute(builder: (context) => AudioApp()),
-        //                 );
-        //               }
-        //             },
-        //             child: Row(
-        //               children: <Widget>[
-        //                 Padding(
-        //                   padding: const EdgeInsets.only(
-        //                     top: 8.0,
-        //                   ),
-        //                   child: IconButton(
-        //                     icon: Icon(
-        //                       MdiIcons.appleKeyboardControl,
-        //                       size: 22,
-        //                     ),
-        //                     onPressed: null,
-        //                     disabledColor: accent,
-        //                   ),
-        //                 ),
-        //                 Padding(
-        //                   padding: const EdgeInsets.only(
-        //                       left: 0.0, top: 7, bottom: 7, right: 15),
-        //                   child: ClipRRect(
-        //                     borderRadius: BorderRadius.circular(8.0),
-        //                     child: CachedNetworkImage(
-        //                       imageUrl: image,
-        //                       fit: BoxFit.fill,
-        //                     ),
-        //                   ),
-        //                 ),
-        //                 Padding(
-        //                   padding: const EdgeInsets.only(top: 0.0),
-        //                   child: Column(
-        //                     crossAxisAlignment: CrossAxisAlignment.start,
-        //                     mainAxisAlignment: MainAxisAlignment.center,
-        //                     children: <Widget>[
-        //                       Text(
-        //                         title,
-        //                         style: TextStyle(
-        //                             color: accent,
-        //                             fontSize: 17,
-        //                             fontWeight: FontWeight.w600),
-        //                       ),
-        //                       Text(
-        //                         artist,
-        //                         style:
-        //                             TextStyle(color: accentLight, fontSize: 15),
-        //                       )
-        //                     ],
-        //                   ),
-        //                 ),
-        //                 Spacer(),
-        //                 IconButton(
-        //                   icon: playerState == PlayerState.playing
-        //                       ? Icon(MdiIcons.pause)
-        //                       : Icon(MdiIcons.playOutline),
-        //                   color: accent,
-        //                   splashColor: Colors.transparent,
-        //                   onPressed: () {
-        //                     setState(() {
-        //                       if (playerState == PlayerState.playing) {
-        //                         audioPlayer.pause();
-        //                         playerState = PlayerState.paused;
-        //                         MediaNotification.showNotification(
-        //                             title: title,
-        //                             author: artist,
-        //                             artUri: image,
-        //                             isPlaying: false);
-        //                       } else if (playerState == PlayerState.paused) {
-        //                         audioPlayer.play(kUrl);
-        //                         playerState = PlayerState.playing;
-        //                         MediaNotification.showNotification(
-        //                             title: title,
-        //                             author: artist,
-        //                             artUri: image,
-        //                             isPlaying: true);
-        //                       }
-        //                     });
-        //                   },
-        //                   iconSize: 45,
-        //                 )
-        //               ],
-        //             ),
-        //           ),
-        //         ),
-        //       )
-        //     : SizedBox.shrink(),
-
         body: Stack(
           children: [
             getBody(),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: player != null
-                  ? Container(
-                      color: Colors.transparent,
-                      padding: EdgeInsets.all(25.0),
-                      child: NowPlayingMini(
-                        width: size.width,
-                        height: 80,
-                      ),
-                    )
-                  : Container(height: 0.0),
+            GestureDetector(
+              onTap: openNowPlaying,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: player != null
+                    ? Container(
+                        color: Colors.transparent,
+                        padding: EdgeInsets.all(25.0),
+                        child: NowPlayingMini(
+                          width: size.width,
+                          height: 80,
+                        ),
+                      )
+                    : SizedBox.shrink(),
+              ),
             ),
           ],
         ),

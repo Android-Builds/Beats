@@ -4,6 +4,7 @@ import 'package:Beats/model/player.dart';
 import 'package:Beats/style/appColors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 
 class SongProgressIndicator extends StatefulWidget {
   final double size;
@@ -30,7 +31,8 @@ class _SongProgressIndicatorState extends State<SongProgressIndicator> {
 
   getValue() {
     return player != null
-        ? player.playing
+        ? player.playing ||
+                player.playerState.processingState != ProcessingState.completed
             ? (player.position.inSeconds / player.duration.inSeconds)
             : 0.0
         : 0.0;

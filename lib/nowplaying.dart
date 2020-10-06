@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:Beats/API/saavn.dart';
 import 'package:Beats/model/player.dart';
+import 'package:Beats/utils/constants.dart';
 import 'package:Beats/visualizer.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -74,6 +75,7 @@ class _NowPlayingState extends State<NowPlaying> {
         await player.load(playlist);
         setState(() {
           player.play();
+          miniPlayer.add(true);
         });
       } catch (e) {
         // catch load errors: 404, invalid url ...
@@ -85,7 +87,6 @@ class _NowPlayingState extends State<NowPlaying> {
 
   @override
   void dispose() {
-    //player.dispose();
     super.dispose();
   }
 
