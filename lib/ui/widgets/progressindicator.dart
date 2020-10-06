@@ -30,12 +30,19 @@ class _SongProgressIndicatorState extends State<SongProgressIndicator> {
   }
 
   getValue() {
-    return player != null
-        ? player.playing ||
-                player.playerState.processingState != ProcessingState.completed
-            ? (player.position.inSeconds / player.duration.inSeconds)
-            : 0.0
-        : 0.0;
+    if (player == null) {
+      return 0.0;
+    } else {
+      var state = player.playerState.processingState;
+      if (player.playing)
+        return (player.position.inSeconds / player.duration.inSeconds);
+      if (state != ProcessingState.completed &&
+          player.position != null &&
+          player.duration != null)
+        return (player.position.inSeconds / player.duration.inSeconds);
+      else
+        return 0.0;
+    }
   }
 
   @override

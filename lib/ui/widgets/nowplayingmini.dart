@@ -39,8 +39,9 @@ class _NowPlayingMiniState extends State<NowPlayingMini> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(song?.title ?? '',
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                                fontSize: 17.0, fontWeight: FontWeight.bold)),
+                                fontSize: 14.0, fontWeight: FontWeight.bold)),
                         SizedBox(height: 5),
                         Text(song?.artist ?? '',
                             style: TextStyle(fontSize: 12.0)),

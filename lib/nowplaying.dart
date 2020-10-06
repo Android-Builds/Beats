@@ -108,11 +108,7 @@ class _NowPlayingState extends State<NowPlaying> {
                           Stack(
                             alignment: Alignment.center,
                             children: [
-                              Container(
-                                height: 350,
-                                width: 350,
-                                child: Vis(),
-                              ),
+                              Visuallizer(),
                               Container(
                                 height: 250,
                                 width: 250,
@@ -271,6 +267,43 @@ class _NowPlayingState extends State<NowPlaying> {
               )
             : Center(child: CircularProgressIndicator()),
       ),
+    );
+  }
+}
+
+class Visuallizer extends StatefulWidget {
+  const Visuallizer({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _VisuallizerState createState() => _VisuallizerState();
+}
+
+class _VisuallizerState extends State<Visuallizer> {
+  Timer t;
+  @override
+  void initState() {
+    super.initState();
+    t = Timer.periodic(const Duration(milliseconds: 500), (Timer t) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (t != null && t.isActive) {
+      t.cancel();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 350,
+      width: 350,
+      child: player.playing ? Vis() : SizedBox.shrink(),
     );
   }
 }
