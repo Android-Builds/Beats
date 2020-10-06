@@ -60,6 +60,7 @@ class _NowPlayingMiniState extends State<NowPlayingMini> {
                             processingState == ProcessingState.buffering) {
                           return FloatingActionButton(
                             mini: true,
+                            heroTag: 'miniwait',
                             onPressed: null,
                             child: CircularProgressIndicator(
                               backgroundColor: Colors.black,
@@ -68,6 +69,7 @@ class _NowPlayingMiniState extends State<NowPlayingMini> {
                         } else if (playing != true) {
                           return FloatingActionButton(
                             mini: true,
+                            heroTag: 'miniplay',
                             child: Icon(Icons.play_arrow),
                             onPressed: player.play,
                           );
@@ -75,12 +77,14 @@ class _NowPlayingMiniState extends State<NowPlayingMini> {
                             ProcessingState.completed) {
                           return FloatingActionButton(
                             mini: true,
+                            heroTag: 'minipause',
                             child: Icon(Icons.pause),
                             onPressed: player.pause,
                           );
                         } else {
                           return FloatingActionButton(
                             mini: true,
+                            heroTag: 'minireplay',
                             child: Icon(Icons.replay),
                             onPressed: () =>
                                 player.seek(Duration.zero, index: 0),
