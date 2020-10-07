@@ -58,10 +58,7 @@ class FeaturedPlayListWidget extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => AlbumPage(
-                                        image: featuredPlaylists[index]
-                                            ['image'],
-                                        tag: featuredPlaylists[index]
-                                            ['listname'],
+                                        index: index,
                                       )));
                         },
                       ),

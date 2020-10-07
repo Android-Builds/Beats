@@ -126,8 +126,9 @@ class _NowPlayingState extends State<NowPlaying> {
                             padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
                             child: Text(
                               metadata.title ?? '',
+                              textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontSize: 30.0,
+                                fontSize: 25.0,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -136,6 +137,7 @@ class _NowPlayingState extends State<NowPlaying> {
                             padding: EdgeInsets.only(bottom: 20.0),
                             child: Text(
                               metadata.album ?? '',
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.w400,

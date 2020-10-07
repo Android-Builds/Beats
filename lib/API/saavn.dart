@@ -100,10 +100,11 @@ getPlaylistDetails(String listId) async {
   String playlistDetailsUrl =
       'https://www.jiosaavn.com/api.php?__call=playlist.getDetails&_format=json&cc=in&_marker=0%3F_marker%3D0&listid=' +
           listId;
-  var playListJSON = await http.get(playlistDetailsUrl,
-      headers: {"Accept": 'application/json;charset=UTF-16'});
+  var playListJSON = await http
+      .get(playlistDetailsUrl, headers: {"Accept": 'application/json'});
   var playList = json.decode(playListJSON.body);
-  return PlayList.fromJson(playList);
+  //print(playList);
+  return playList;
 }
 
 Future<List> topSongs() async {
