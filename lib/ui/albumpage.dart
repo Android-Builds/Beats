@@ -227,9 +227,29 @@ class _AlbumPageState extends State<AlbumPage> {
                       ],
                     );
                   } else {
+                    // return Container(
+                    //     height: MediaQuery.of(context).size.height / 2,
+                    //     child: Center(child: CircularProgressIndicator()));
                     return Container(
-                        height: MediaQuery.of(context).size.height / 2,
-                        child: Center(child: CircularProgressIndicator()));
+                      height: MediaQuery.of(context).size.height / 1.5,
+                      child: ListView.builder(
+                        itemCount: 10,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: EdgeInsets.symmetric(
+                              horizontal: 20.0,
+                              vertical: 10.0,
+                            ),
+                            height: 25.0,
+                            child: LinearProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.grey[50].withAlpha(20)),
+                              backgroundColor: Colors.transparent,
+                            ),
+                          );
+                        },
+                      ),
+                    );
                   }
                 },
               ),

@@ -1,4 +1,5 @@
 import 'package:Beats/model/player.dart';
+import 'package:Beats/style/appColors.dart';
 import 'package:Beats/ui/widgets/progressindicator.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -27,7 +28,10 @@ class _NowPlayingMiniState extends State<NowPlayingMini> {
             height: height,
             width: width,
             child: Card(
-              color: Colors.grey[900],
+              color:
+                  MediaQuery.of(context).platformBrightness == Brightness.dark
+                      ? Colors.grey[900]
+                      : Colors.white70,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(200.0)),
               child: Row(
@@ -60,6 +64,7 @@ class _NowPlayingMiniState extends State<NowPlayingMini> {
                         if (processingState == ProcessingState.loading ||
                             processingState == ProcessingState.buffering) {
                           return FloatingActionButton(
+                            backgroundColor: accent,
                             mini: true,
                             heroTag: 'miniwait',
                             onPressed: null,
@@ -69,6 +74,7 @@ class _NowPlayingMiniState extends State<NowPlayingMini> {
                           );
                         } else if (playing != true) {
                           return FloatingActionButton(
+                            backgroundColor: accent,
                             mini: true,
                             heroTag: 'miniplay',
                             child: Icon(Icons.play_arrow),
@@ -77,6 +83,7 @@ class _NowPlayingMiniState extends State<NowPlayingMini> {
                         } else if (processingState !=
                             ProcessingState.completed) {
                           return FloatingActionButton(
+                            backgroundColor: accent,
                             mini: true,
                             heroTag: 'minipause',
                             child: Icon(Icons.pause),
@@ -84,6 +91,7 @@ class _NowPlayingMiniState extends State<NowPlayingMini> {
                           );
                         } else {
                           return FloatingActionButton(
+                            backgroundColor: accent,
                             mini: true,
                             heroTag: 'minireplay',
                             child: Icon(Icons.replay),

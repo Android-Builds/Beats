@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:Beats/API/saavn.dart';
 import 'package:Beats/model/player.dart';
+import 'package:Beats/style/appColors.dart';
 import 'package:Beats/utils/constants.dart';
 import 'package:Beats/visualizer.dart';
 import 'package:audio_session/audio_session.dart';
@@ -97,6 +98,32 @@ class _NowPlayingState extends State<NowPlaying> {
         child: playlist != null
             ? Column(
                 children: [
+                  GestureDetector(
+                    onHorizontalDragDown: (details) {
+                      Navigator.pop(context);
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(10.0),
+                          height: 5.0,
+                          width: 50.0,
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(40.0),
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(10.0),
+                          height: 20.0,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(40.0),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   StreamBuilder<SequenceState>(
                     stream: player.sequenceStateStream,
                     builder: (context, snapshot) {
@@ -128,7 +155,7 @@ class _NowPlayingState extends State<NowPlaying> {
                               metadata.title ?? '',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontSize: 25.0,
+                                fontSize: 30.0,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -148,6 +175,7 @@ class _NowPlayingState extends State<NowPlaying> {
                       );
                     },
                   ),
+                  Spacer(),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: StreamBuilder<Duration>(
@@ -173,8 +201,9 @@ class _NowPlayingState extends State<NowPlaying> {
                       },
                     ),
                   ),
-                  SizedBox(height: 20.0),
+                  SizedBox(height: 30.0),
                   ControlButtons(player),
+                  Spacer(),
                   Card(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0)),
@@ -317,94 +346,121 @@ class ControlButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        StreamBuilder<LoopMode>(
-          stream: player.loopModeStream,
-          builder: (context, snapshot) {
-            final loopMode = snapshot.data ?? LoopMode.off;
-            const icons = [
-              Icon(MaterialIcons.repeat, color: Colors.grey),
-              Icon(Icons.repeat, color: Colors.orange),
-              Icon(Icons.repeat_one, color: Colors.orange),
-            ];
-            const cycleModes = [
-              LoopMode.off,
-              LoopMode.all,
-              LoopMode.one,
-            ];
-            final index = cycleModes.indexOf(loopMode);
-            return IconButton(
-              icon: icons[index],
-              onPressed: () {
-                player.setLoopMode(cycleModes[
-                    (cycleModes.indexOf(loopMode) + 1) % cycleModes.length]);
-              },
-            );
-          },
-        ),
-        StreamBuilder<SequenceState>(
-          stream: player.sequenceStateStream,
-          builder: (context, snapshot) => IconButton(
-            icon: Icon(Icons.skip_previous),
-            onPressed: player.hasPrevious ? player.seekToPrevious : null,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          StreamBuilder<LoopMode>(
+            stream: player.loopModeStream,
+            builder: (context, snapshot) {
+              var loopMode = snapshot.data ?? LoopMode.off;
+              List<Widget> icons = [
+                Center(child: Icon(Icons.loop, color: Colors.grey)),
+                Center(
+                    child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Icon(Icons.loop_rounded, color: accent),
+                    Text('1',
+                        style: TextStyle(
+                          fontSize: 6.0,
+                          color: accent,
+                          fontWeight: FontWeight.bold,
+                        )),
+                  ],
+                )),
+                Center(child: Icon(Icons.loop_rounded, color: accent)),
+              ];
+              const cycleModes = [
+                LoopMode.off,
+                LoopMode.all,
+                LoopMode.one,
+              ];
+              final index = cycleModes.indexOf(loopMode);
+              return IconButton(
+                icon: icons[index],
+                onPressed: () {
+                  player.setLoopMode(cycleModes[
+                      (cycleModes.indexOf(loopMode) + 1) % cycleModes.length]);
+                },
+              );
+            },
           ),
-        ),
-        StreamBuilder<PlayerState>(
-          stream: player.playerStateStream,
-          builder: (context, snapshot) {
-            final playerState = snapshot.data;
-            final processingState = playerState?.processingState;
-            final playing = playerState?.playing;
-            if (processingState == ProcessingState.loading ||
-                processingState == ProcessingState.buffering) {
-              return FloatingActionButton(
-                onPressed: null,
-                child: CircularProgressIndicator(
-                  backgroundColor: Colors.black,
-                ),
-              );
-            } else if (playing != true) {
-              return FloatingActionButton(
-                child: Icon(Icons.play_arrow),
-                onPressed: player.play,
-              );
-            } else if (processingState != ProcessingState.completed) {
-              return FloatingActionButton(
-                child: Icon(Icons.pause),
-                onPressed: player.pause,
-              );
-            } else {
-              return FloatingActionButton(
-                child: Icon(Icons.replay),
-                onPressed: () => player.seek(Duration.zero, index: 0),
-              );
-            }
-          },
-        ),
-        StreamBuilder<SequenceState>(
-          stream: player.sequenceStateStream,
-          builder: (context, snapshot) => IconButton(
-            icon: Icon(Icons.skip_next),
-            onPressed: player.hasNext ? player.seekToNext : null,
+          Spacer(),
+          StreamBuilder<SequenceState>(
+            stream: player.sequenceStateStream,
+            builder: (context, snapshot) => IconButton(
+              icon: Icon(Icons.skip_previous),
+              onPressed: player.hasPrevious ? player.seekToPrevious : null,
+            ),
           ),
-        ),
-        StreamBuilder<bool>(
-          stream: player.shuffleModeEnabledStream,
-          builder: (context, snapshot) {
-            final shuffleModeEnabled = snapshot.data ?? false;
-            return IconButton(
-              icon: shuffleModeEnabled
-                  ? Icon(Icons.shuffle, color: Colors.orange)
-                  : Icon(Icons.shuffle, color: Colors.grey),
-              onPressed: () {
-                player.setShuffleModeEnabled(!shuffleModeEnabled);
+          Spacer(),
+          Container(
+            height: 65,
+            width: 65,
+            child: StreamBuilder<PlayerState>(
+              stream: player.playerStateStream,
+              builder: (context, snapshot) {
+                final playerState = snapshot.data;
+                final processingState = playerState?.processingState;
+                final playing = playerState?.playing;
+                if (processingState == ProcessingState.loading ||
+                    processingState == ProcessingState.buffering) {
+                  return FloatingActionButton(
+                    backgroundColor: accent,
+                    onPressed: null,
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.black,
+                    ),
+                  );
+                } else if (playing != true) {
+                  return FloatingActionButton(
+                    backgroundColor: accent,
+                    child: Icon(Icons.play_arrow),
+                    onPressed: player.play,
+                  );
+                } else if (processingState != ProcessingState.completed) {
+                  return FloatingActionButton(
+                    backgroundColor: accent,
+                    child: Icon(Icons.pause),
+                    onPressed: player.pause,
+                  );
+                } else {
+                  return FloatingActionButton(
+                    backgroundColor: accent,
+                    child: Icon(Icons.replay),
+                    onPressed: () => player.seek(Duration.zero, index: 0),
+                  );
+                }
               },
-            );
-          },
-        ),
-      ],
+            ),
+          ),
+          Spacer(),
+          StreamBuilder<SequenceState>(
+            stream: player.sequenceStateStream,
+            builder: (context, snapshot) => IconButton(
+              icon: Icon(Icons.skip_next),
+              onPressed: player.hasNext ? player.seekToNext : null,
+            ),
+          ),
+          Spacer(),
+          StreamBuilder<bool>(
+            stream: player.shuffleModeEnabledStream,
+            builder: (context, snapshot) {
+              final shuffleModeEnabled = snapshot.data ?? false;
+              return IconButton(
+                icon: shuffleModeEnabled
+                    ? Icon(Icons.shuffle, color: accent)
+                    : Icon(Icons.shuffle, color: Colors.grey),
+                onPressed: () {
+                  player.setShuffleModeEnabled(!shuffleModeEnabled);
+                },
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }
@@ -437,7 +493,7 @@ class _SeekBarState extends State<SeekBar> {
           data: SliderThemeData(
             thumbShape: SliderComponentShape.noOverlay,
             inactiveTrackColor: Colors.grey[500],
-            activeTrackColor: Color(0xffa5ecd7),
+            activeTrackColor: accent,
           ),
           child: Slider(
             min: 0.0,
