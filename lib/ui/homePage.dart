@@ -8,6 +8,8 @@ import 'package:Beats/ui/topsongs.dart';
 import 'package:Beats/ui/widgets/featuredplaylist.dart';
 import 'package:Beats/ui/widgets/nowplayingmini.dart';
 import 'package:Beats/utils/constants.dart';
+import 'package:Beats/utils/themes.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
@@ -134,43 +136,49 @@ class AppState extends State<Musify> {
       children: [
         SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               searchedList.isNotEmpty
-                  ? ListView.builder(
+                  ? ListView(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: searchedList.length,
-                      itemBuilder: (BuildContext ctxt, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 5, bottom: 5),
-                          child: Card(
-                            color: Colors.black12,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            elevation: 0,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(10.0),
-                              onTap: () {
-                                // getSongDetails(
-                                //     searchedList[index]["id"], context);
-                              },
-                              onLongPress: () {
-                                topSongs();
-                              },
-                              splashColor: accent,
-                              hoverColor: accent,
-                              focusColor: accent,
-                              highlightColor: accent,
-                              child: Column(
-                                children: <Widget>[
-                                  ListTile(
-                                    leading: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Icon(
-                                        Icons.music_note,
-                                        size: 30,
-                                        color: accent,
+                      children: [
+                        SizedBox(height: 80.0),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 30.0,
+                            vertical: 5.0,
+                          ),
+                          child: Text('Songs', style: title),
+                        ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: searchedList.length,
+                          itemBuilder: (BuildContext ctxt, int index) {
+                            print(searchedList[index]);
+                            return Column(
+                              children: <Widget>[
+                                FlatButton(
+                                  onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => NowPlaying(
+                                              songId: searchedList[index]['id']
+                                                  .toString(),
+                                              newSong: !(currentSongId ==
+                                                  searchedList[index]['id']
+                                                      .toString())))),
+                                  child: ListTile(
+                                    leading: Container(
+                                      height: 40.0,
+                                      width: 40.0,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                        image: DecorationImage(
+                                          image: CachedNetworkImageProvider(
+                                              searchedList[index]['image']),
+                                        ),
                                       ),
                                     ),
                                     title: Text(
@@ -179,28 +187,33 @@ class AppState extends State<Musify> {
                                           .split("(")[0]
                                           .replaceAll("&quot;", "\"")
                                           .replaceAll("&amp;", "&"),
-                                      style: TextStyle(color: Colors.white),
+                                      style: medium.copyWith(
+                                          fontWeight: FontWeight.w500),
                                     ),
                                     subtitle: Text(
-                                      searchedList[index]['more_info']
-                                          ["singers"],
-                                      style: TextStyle(color: Colors.white),
+                                      (searchedList[index]['explicit_content']
+                                                      .toString() ==
+                                                  '1'
+                                              ? '🅴 '
+                                              : '') +
+                                          searchedList[index]['more_info']
+                                              ['singers'] +
+                                          ' • ' +
+                                          searchedList[index]['more_info']
+                                              ['album'],
+                                      style: small.copyWith(
+                                          fontWeight: FontWeight.w400),
                                     ),
                                     trailing: IconButton(
-                                      color: accent,
-                                      icon: Icon(Icons.download_done_outlined),
-                                      // onPressed: () =>
-                                      //     downloadEngine.downloadSong(
-                                      //         searchedList[index]["id"],
-                                      //         context),
-                                    ),
+                                        icon: Icon(Icons.more_vert),
+                                        onPressed: null),
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
                     )
                   : Column(
                       children: [

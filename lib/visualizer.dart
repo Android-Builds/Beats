@@ -1,3 +1,4 @@
+import 'package:Beats/style/appColors.dart';
 import 'package:flare_flutter/flare.dart';
 import 'package:flare_dart/math/mat2d.dart';
 import 'package:flare_flutter/flare_actor.dart';
@@ -31,6 +32,7 @@ class _VisState extends State<Vis> with FlareController {
       fit: BoxFit.cover,
       animation: 'Alarm',
       controller: this,
+      color: accent,
     );
   }
 }

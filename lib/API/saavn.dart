@@ -77,6 +77,11 @@ Future<List> fetchSongsList(searchQuery) async {
         .replaceAll("&amp;", "&")
         .replaceAll("&#039;", "'")
         .replaceAll("&quot;", "\"");
+
+    searchedList[i]['image'] = searchedList[i]['image']
+        .toString()
+        .replaceAll('http', 'https')
+        .replaceAll('httpss', 'https');
   }
   return searchedList;
 }

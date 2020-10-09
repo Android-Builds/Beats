@@ -3,6 +3,7 @@ import 'package:Beats/model/player.dart';
 import 'package:Beats/nowplaying.dart';
 import 'package:Beats/style/appColors.dart';
 import 'package:Beats/utils/constants.dart';
+import 'package:Beats/utils/themes.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -23,10 +24,6 @@ class _AlbumPageState extends State<AlbumPage> {
   _AlbumPageState(
     this.index,
   );
-
-  TextStyle small = TextStyle(fontSize: 12.0, fontWeight: FontWeight.w200);
-  TextStyle medium = TextStyle(
-      fontSize: 13.0, fontWeight: FontWeight.w300, color: Colors.grey[680]);
 
   @override
   void initState() {

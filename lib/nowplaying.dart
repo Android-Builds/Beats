@@ -545,46 +545,6 @@ class _SeekBarState extends State<SeekBar> {
   Duration get _remaining => widget.duration - widget.position;
 }
 
-_showSliderDialog({
-  BuildContext context,
-  String title,
-  int divisions,
-  double min,
-  double max,
-  String valueSuffix = '',
-  Stream<double> stream,
-  ValueChanged<double> onChanged,
-}) {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(title, textAlign: TextAlign.center),
-      content: StreamBuilder<double>(
-        stream: stream,
-        builder: (context, snapshot) => Container(
-          height: 100.0,
-          child: Column(
-            children: [
-              Text('${snapshot.data?.toStringAsFixed(1)}$valueSuffix',
-                  style: TextStyle(
-                      fontFamily: 'Fixed',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24.0)),
-              Slider(
-                divisions: divisions,
-                min: min,
-                max: max,
-                value: snapshot.data ?? 1.0,
-                onChanged: onChanged,
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
 _showSlider(
     {BuildContext context,
     int divisions,
