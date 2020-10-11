@@ -4,7 +4,6 @@ import 'package:des_plugin/des_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-List searchedList = [];
 List topSongsList = [];
 String key = "38346591";
 String decrypt = "";
@@ -54,7 +53,7 @@ class PlayList {
   }
 }
 
-Future<List> fetchSongsList(searchQuery) async {
+Future fetchSongsList(searchQuery) async {
   String searchUrl =
       "https://www.jiosaavn.com/api.php?app_version=5.18.3&api_version=4&readable_version=5.18.3&v=79&_format=json&query=" +
           searchQuery +
@@ -63,27 +62,31 @@ Future<List> fetchSongsList(searchQuery) async {
   var resEdited = (res.body).split("-->");
   var getMain = json.decode(resEdited[1]);
 
-  searchedList = getMain["songs"]["data"];
-  for (int i = 0; i < searchedList.length; i++) {
-    searchedList[i]['title'] = searchedList[i]['title']
-        .toString()
-        .replaceAll("&amp;", "&")
-        .replaceAll("&#039;", "'")
-        .replaceAll("&quot;", "\"");
+  // searchedList = getMain["songs"]["data"];
+  // for (int i = 0; i < searchedList.length; i++) {
+  //   searchedList[i]['title'] = searchedList[i]['title']
+  //       .toString()
+  //       .replaceAll("&amp;", "&")
+  //       .replaceAll("&#039;", "'")
+  //       .replaceAll("&quot;", "\"");
 
-    searchedList[i]['more_info']['singers'] = searchedList[i]['more_info']
-            ['singers']
-        .toString()
-        .replaceAll("&amp;", "&")
-        .replaceAll("&#039;", "'")
-        .replaceAll("&quot;", "\"");
+  //   searchedList[i]['more_info']['singers'] = searchedList[i]['more_info']
+  //           ['singers']
+  //       .toString()
+  //       .replaceAll("&amp;", "&")
+  //       .replaceAll("&#039;", "'")
+  //       .replaceAll("&quot;", "\"");
 
-    searchedList[i]['image'] = searchedList[i]['image']
-        .toString()
-        .replaceAll('http', 'https')
-        .replaceAll('httpss', 'https');
-  }
-  return searchedList;
+  //   searchedList[i]['image'] = searchedList[i]['image']
+  //       .toString()
+  //       .replaceAll('http', 'https')
+  //       .replaceAll('httpss', 'https');
+  // }
+  //print(getMain);
+  //print(getMain.keys);
+  var a = getMain.keys.toList();
+  print(a);
+  return getMain;
 }
 
 List<PlayList> playlists = new List<PlayList>();

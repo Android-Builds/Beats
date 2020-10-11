@@ -4,7 +4,9 @@ import 'package:Beats/API/saavn.dart';
 import 'package:Beats/model/player.dart';
 import 'package:Beats/nowplaying.dart';
 import 'package:Beats/style/appColors.dart';
+import 'package:Beats/ui/playlistpage.dart';
 import 'package:Beats/ui/topsongs.dart';
+import 'package:Beats/ui/widgets/albumpage.dart';
 import 'package:Beats/ui/widgets/featuredplaylist.dart';
 import 'package:Beats/ui/widgets/nowplayingmini.dart';
 import 'package:Beats/utils/constants.dart';
@@ -79,7 +81,7 @@ class AppState extends State<Musify> {
     if (searchQuery.isEmpty) return;
     fetchingSongs = true;
     setState(() {});
-    await fetchSongsList(searchQuery);
+    searchedList = await fetchSongsList(searchQuery);
     fetchingSongs = false;
     setState(() {});
   }
@@ -139,80 +141,39 @@ class AppState extends State<Musify> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               searchedList.isNotEmpty
-                  ? ListView(
-                      shrinkWrap: true,
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      //shrinkWrap: true,
                       children: [
                         SizedBox(height: 80.0),
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 30.0,
-                            vertical: 5.0,
+                          padding: const EdgeInsets.only(
+                            left: 30.0,
+                            top: 15.0,
+                            bottom: 5,
+                          ),
+                          child: Text('Top Result', style: title),
+                        ),
+                        SearchList(type: 'topquery'),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 30.0,
+                            top: 15.0,
+                            bottom: 5,
                           ),
                           child: Text('Songs', style: title),
                         ),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: searchedList.length,
-                          itemBuilder: (BuildContext ctxt, int index) {
-                            print(searchedList[index]);
-                            return Column(
-                              children: <Widget>[
-                                FlatButton(
-                                  onPressed: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => NowPlaying(
-                                              songId: searchedList[index]['id']
-                                                  .toString(),
-                                              newSong: !(currentSongId ==
-                                                  searchedList[index]['id']
-                                                      .toString())))),
-                                  child: ListTile(
-                                    leading: Container(
-                                      height: 40.0,
-                                      width: 40.0,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                        image: DecorationImage(
-                                          image: CachedNetworkImageProvider(
-                                              searchedList[index]['image']),
-                                        ),
-                                      ),
-                                    ),
-                                    title: Text(
-                                      (searchedList[index]['title'])
-                                          .toString()
-                                          .split("(")[0]
-                                          .replaceAll("&quot;", "\"")
-                                          .replaceAll("&amp;", "&"),
-                                      style: medium.copyWith(
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    subtitle: Text(
-                                      (searchedList[index]['explicit_content']
-                                                      .toString() ==
-                                                  '1'
-                                              ? '🅴 '
-                                              : '') +
-                                          searchedList[index]['more_info']
-                                              ['singers'] +
-                                          ' • ' +
-                                          searchedList[index]['more_info']
-                                              ['album'],
-                                      style: small.copyWith(
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                    trailing: IconButton(
-                                        icon: Icon(Icons.more_vert),
-                                        onPressed: null),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
+                        SearchList(type: 'songs'),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 30.0,
+                            top: 15.0,
+                            bottom: 5,
+                          ),
+                          child: Text('Albums', style: title),
                         ),
+                        SearchList(type: 'albums'),
+                        //SearchList(type: 'songs'),
                       ],
                     )
                   : Column(
@@ -260,6 +221,16 @@ class AppState extends State<Musify> {
                         ),
                         TopSongs(),
                         FeaturedPlayListWidget(),
+                        SizedBox(height: 20),
+                        RaisedButton(
+                          child: Text('Search'),
+                          onPressed: () async {
+                            Map a = await fetchSongsList('tum hi ho');
+                            print(a['songs']);
+                          },
+                        ),
+                        Container(height: 500, color: Colors.blueAccent),
+                        Container(height: 500, color: Colors.blue[900])
                       ],
                     ),
             ],
@@ -272,13 +243,12 @@ class AppState extends State<Musify> {
                   vertical: 20.0,
                 ),
                 child: TextField(
-                  onSubmitted: (String value) {
+                  onChanged: (String value) {
                     search();
                   },
                   controller: searchBar,
                   style: TextStyle(
                     fontSize: 15,
-                    color: accent,
                   ),
                   cursorColor: Colors.white,
                   decoration: InputDecoration(
@@ -299,7 +269,10 @@ class AppState extends State<Musify> {
                     ),
                     prefixIcon: searchNow
                         ? IconButton(
-                            icon: Icon(Icons.arrow_back),
+                            icon: Icon(
+                              Icons.arrow_back,
+                              color: accent,
+                            ),
                             onPressed: () {
                               setState(() {
                                 searchNow = false;
@@ -373,6 +346,131 @@ class AppState extends State<Musify> {
                     }),
               ),
       ],
+    );
+  }
+}
+
+class SearchList extends StatefulWidget {
+  final String type;
+  const SearchList({Key key, @required this.type}) : super(key: key);
+  @override
+  _SearchListState createState() => _SearchListState(type);
+}
+
+class _SearchListState extends State<SearchList> {
+  final String type;
+  _SearchListState(this.type);
+
+  List data = List();
+
+  String getText(int index) {
+    if (type == 'songs') {
+      return data[index]['more_info']['singers'] +
+          ' • ' +
+          data[index]['more_info']['album'];
+    }
+    if (type == 'albums') {
+      return data[index]['more_info']['year'].toString() +
+          ' • ' +
+          data[index]['more_info']['language']
+              .toString()
+              //Make the first letter capital
+              .replaceFirst(
+                  data[index]['more_info']['language']
+                      .toString()
+                      .substring(0, 1),
+                  data[index]['more_info']['language']
+                      .toString()
+                      .substring(0, 1)
+                      .toUpperCase()) +
+          ' • ' +
+          data[index]['more_info']['music'];
+    }
+    if (type == 'topquery') {
+      return data[index]['description'];
+    }
+    return '';
+  }
+
+  getOnPressed(int index) {
+    if (type == 'songs' || type == 'topquery')
+      return Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NowPlaying(
+            songId: data[index]['id'].toString(),
+            newSong: !(currentSongId == data[index]['id'].toString()),
+          ),
+        ),
+      );
+    if (type == 'albums') {
+      print(data[index]['id'].toString());
+      // return Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => AlbumPage(
+      //       data: data[index],
+      //       // id: data[index]['id'].toString(),
+      //       // language: data[index]['more_info']['languaue'],
+      //       // imageUrl: data[index]['image'],
+      //     ),
+      //   ),
+      // );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    data = searchedList[type]['data'];
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: data.length,
+      itemBuilder: (BuildContext ctxt, int index) {
+        //print(searchedList[index]);
+        return Column(
+          children: <Widget>[
+            FlatButton(
+              //need to add different onPressed methods for different types
+
+              onPressed: () => getOnPressed(index),
+              child: ListTile(
+                leading: Container(
+                  height: 40.0,
+                  width: 40.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5.0),
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider(data[index]['image']
+                          .toString()
+                          .replaceAll('http', 'https')
+                          .replaceAll('httpss', 'https')),
+                    ),
+                  ),
+                ),
+                title: Text(
+                  (data[index]['title'])
+                      .toString()
+                      .split("(")[0]
+                      .replaceAll("&quot;", "\"")
+                      .replaceAll("&amp;", "&"),
+                  style: medium.copyWith(fontWeight: FontWeight.w500),
+                ),
+                subtitle: Text(
+                  (data[index]['explicit_content'].toString() == '1'
+                          ? '🅴 '
+                          : '') +
+                      getText(index),
+                  style: small.copyWith(
+                      fontWeight: FontWeight.w400, fontSize: 11.0),
+                ),
+                trailing:
+                    IconButton(icon: Icon(Icons.more_vert), onPressed: null),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

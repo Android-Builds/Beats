@@ -93,9 +93,9 @@ class _NowPlayingState extends State<NowPlaying> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: playlist != null
+    return SafeArea(
+      child: Scaffold(
+        body: playlist != null
             ? Column(
                 children: [
                   GestureDetector(

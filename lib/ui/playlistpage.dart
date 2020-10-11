@@ -7,21 +7,21 @@ import 'package:Beats/utils/themes.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-class AlbumPage extends StatefulWidget {
+class PlaylistPage extends StatefulWidget {
   final int index;
 
-  const AlbumPage({
+  const PlaylistPage({
     Key key,
     @required this.index,
   }) : super(key: key);
   @override
-  _AlbumPageState createState() => _AlbumPageState(index);
+  _PlaylistPageState createState() => _PlaylistPageState(index);
 }
 
-class _AlbumPageState extends State<AlbumPage> {
+class _PlaylistPageState extends State<PlaylistPage> {
   final int index;
 
-  _AlbumPageState(
+  _PlaylistPageState(
     this.index,
   );
 
