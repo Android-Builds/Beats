@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:html/parser.dart' show parse;
 
 import 'package:des_plugin/des_plugin.dart';
 import 'package:flutter/material.dart';
@@ -87,6 +89,103 @@ Future fetchSongsList(searchQuery) async {
   var a = getMain.keys.toList();
   print(a);
   return getMain;
+}
+
+class Session {
+  Map<String, String> headers = {};
+
+  Future<Map> get(String url) async {
+    http.Response response = await http.get(url, headers: headers);
+    updateCookie(response);
+    return json.decode(response.body);
+  }
+
+  Future<Map> post(String url, dynamic data) async {
+    http.Response response = await http.post(url, body: data, headers: headers);
+    updateCookie(response);
+    return json.decode(response.body);
+  }
+
+  void updateCookie(http.Response response) {
+    String rawCookie = response.headers['set-cookie'];
+    if (rawCookie != null) {
+      int index = rawCookie.indexOf(';');
+      headers['cookie'] =
+          (index == -1) ? rawCookie : rawCookie.substring(0, index);
+    }
+  }
+}
+
+login() async {
+  var headers = {
+    'User-Agent':
+        'Dalvik/2.1.0 (Linux; U; Android 10.0; Samsung S10 Build/LMY47O)',
+    'Host': 'www.saavn.com',
+    'Connection': 'Keep-Alive',
+    'Accept-Encoding': 'gzip',
+    'Content-Type': 'application/x-www-form-urlencoded'
+  };
+
+  String action = 'user.login';
+  String username = 'username';
+  String password = 'password';
+
+  var payload = {
+    'password': password,
+    '_marker': '0',
+    'cc': '',
+    'ctx': 'android',
+    'network_operator': '',
+    'email': username,
+    'state': 'login',
+    'v': '224',
+    'app_version': '6.8.2',
+    'build': 'Pro',
+    'api_version': '4',
+    'network_type': 'WIFI',
+    'username': username,
+    '_format': 'json',
+    '__call': action,
+    'manufacturer': 'Samsung',
+    'readable_version': '6.8.2',
+    'network_subtype': '',
+    'model': 'Samsung Galaxy S10'
+  };
+
+  String url = "https://www.saavn.com/api.php";
+  String libraryurl =
+      'https://www.saavn.com/api.php?_marker=0&cc=&ctx=android&state=login&v=224&app_version=6.8.2&api_version=4&_format=json&__call=library.getAll';
+  var response = await http.post(url, headers: headers, body: payload);
+  //print(response.persistentConnection);
+  //print(response.headers);
+  var cookie = response.headers['set-cookie'];
+  //print(cookie);
+  //print(response.body);
+  var res = await http.get(
+      'https://www.jiosaavn.com/api.php?_marker=0&_format=json&__call=library.getAll',
+      headers: headers);
+  var homeJson = json.decode(res.body);
+  // var resEdited = (res.body).split("-->");
+  // var homeJson = json.decode(resEdited[1]);
+  //print(homeJson);
+}
+
+Future getHomePage() async {
+  var resp = await http.get('https://www.jiosaavn.com/');
+  var doc = parse(resp.body);
+  //Map map = json.decode(doc.body.children[doc.body.children.length - 1].text);
+  //print(map);
+
+  Map map = json.decode(doc.body.text
+      .substring(
+          doc.body.text.indexOf('window.__INITIAL_DATA__') +
+              'window.__INITIAL_DATA__'.length +
+              3,
+          doc.body.text.length)
+      .replaceAll('undefined', '"undefined"')
+      .replaceAll('new Date(', '')
+      .replaceAll('Z")', 'Z"'));
+  return map;
 }
 
 List<PlayList> playlists = new List<PlayList>();

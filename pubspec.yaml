@@ -43,6 +43,7 @@ dependencies:
       url: https://github.com/Sj-Projects/flutter_media_notification.git
       ref: master
   cached_network_image: ^2.3.2+1
+  html: ^0.14.0+4
 
 dev_dependencies:
   flutter_test:

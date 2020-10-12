@@ -4,6 +4,7 @@ import 'package:Beats/API/saavn.dart';
 import 'package:Beats/model/player.dart';
 import 'package:Beats/nowplaying.dart';
 import 'package:Beats/style/appColors.dart';
+import 'package:Beats/ui/home.dart';
 import 'package:Beats/ui/playlistpage.dart';
 import 'package:Beats/ui/topsongs.dart';
 import 'package:Beats/ui/widgets/albumpage.dart';
@@ -223,10 +224,12 @@ class AppState extends State<Musify> {
                         FeaturedPlayListWidget(),
                         SizedBox(height: 20),
                         RaisedButton(
-                          child: Text('Search'),
-                          onPressed: () async {
-                            Map a = await fetchSongsList('tum hi ho');
-                            print(a['songs']);
+                          child: Text('HomePage'),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Home()));
                           },
                         ),
                         Container(height: 500, color: Colors.blueAccent),
