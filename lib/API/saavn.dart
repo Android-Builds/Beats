@@ -104,6 +104,17 @@ Future getFeaturedPlaylists() async {
   return featuredPlaylists;
 }
 
+getAlbumDetails(String listId) async {
+  String playlistDetailsUrl =
+      'https://www.jiosaavn.com/api.php?__call=content.getAlbumDetails&_format=json&cc=in&_marker=0%3F_marker%3D0&albumid=' +
+          listId;
+  var playListJSON = await http
+      .get(playlistDetailsUrl, headers: {"Accept": 'application/json'});
+  var playList = json.decode(playListJSON.body);
+  //print(playList);
+  return playList;
+}
+
 getPlaylistDetails(String listId) async {
   String playlistDetailsUrl =
       'https://www.jiosaavn.com/api.php?__call=playlist.getDetails&_format=json&cc=in&_marker=0%3F_marker%3D0&listid=' +

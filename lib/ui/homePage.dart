@@ -405,17 +405,17 @@ class _SearchListState extends State<SearchList> {
       );
     if (type == 'albums') {
       print(data[index]['id'].toString());
-      // return Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => AlbumPage(
-      //       data: data[index],
-      //       // id: data[index]['id'].toString(),
-      //       // language: data[index]['more_info']['languaue'],
-      //       // imageUrl: data[index]['image'],
-      //     ),
-      //   ),
-      // );
+      return Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AlbumPage(
+            data: data[index],
+            // id: data[index]['id'].toString(),
+            // language: data[index]['more_info']['languaue'],
+            // imageUrl: data[index]['image'],
+          ),
+        ),
+      );
     }
   }
 
