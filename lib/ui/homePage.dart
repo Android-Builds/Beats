@@ -138,6 +138,7 @@ class AppState extends State<Musify> {
     return Stack(
       children: [
         SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -220,20 +221,21 @@ class AppState extends State<Musify> {
                             ),
                           ],
                         ),
-                        TopSongs(),
-                        FeaturedPlayListWidget(),
-                        SizedBox(height: 20),
-                        RaisedButton(
-                          child: Text('HomePage'),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Home()));
-                          },
-                        ),
-                        Container(height: 500, color: Colors.blueAccent),
-                        Container(height: 500, color: Colors.blue[900])
+                        Home()
+                        // TopSongs(),
+                        // FeaturedPlayListWidget(),
+                        // SizedBox(height: 20),
+                        // RaisedButton(
+                        //   child: Text('HomePage'),
+                        //   onPressed: () {
+                        //     Navigator.push(
+                        //         context,
+                        //         MaterialPageRoute(
+                        //             builder: (context) => Home()));
+                        //   },
+                        // ),
+                        // Container(height: 500, color: Colors.blueAccent),
+                        // Container(height: 500, color: Colors.blue[900])
                       ],
                     ),
             ],
@@ -339,7 +341,7 @@ class AppState extends State<Musify> {
                 right: 20.0,
                 child: FloatingActionButton(
                     child: Icon(Icons.search),
-                    backgroundColor: Theme.of(context).backgroundColor,
+                    backgroundColor: accent,
                     mini: true,
                     onPressed: () {
                       setState(() {

@@ -19,6 +19,25 @@ Map englishTokens = {
   'Weekly top': 'LdbVc1Z5i9E_',
 };
 
+String homeapi =
+    'https://www.jiosaavn.com/api.php?__call=webapi.getLaunchData&api_version=4&_format=json&_marker=0&ctx=wap6dot0';
+String newSongsApi =
+    'https://www.jiosaavn.com/api.php?__call=content.getAlbums&api_version=4&_format=json&_marker=0&n=50&p=1&ctx=wap6dot0';
+String newSongsinLang =
+    'https://www.jiosaavn.com/api.php?__call=content.getAlbums&api_version=4&_format=json&_marker=0&n=50&p=1&ctx=wap6dot0&languages=hindi';
+String topSearches =
+    'https://www.jiosaavn.com/api.php?__call=content.getTopSearches&ctx=wap6dot0&api_version=4&_format=json&_marker=0';
+String weeklyTop =
+    'https://www.jiosaavn.com/api.php?__call=webapi.get&token=8MT-LQlP35c_&type=playlist&p=1&n=50&includeMetaTags=0&ctx=wap6dot0&api_version=4&_format=json&_marker=0';
+String albumdetailsapi =
+    'https://www.jiosaavn.com/api.php?__call=webapi.get&token=' +
+        'LY2RG4ExlJo_' +
+        '&type=album&includeMetaTags=0&ctx=wap6dot0&api_version=4&_format=json&_marker=0';
+String albumDetails =
+    'https://www.jiosaavn.com/api.php?__call=reco.getAlbumReco&api_version=4&_format=json&_marker=0&ctx=wap6dot0&albumid=22915546';
+String search =
+    'https://www.jiosaavn.com/api.php?__call=autocomplete.get&_format=json&_marker=0&ctx=wap6dot0&query=godzilla';
+
 class PlayList {
   String id;
   String name;
@@ -170,7 +189,7 @@ login() async {
   //print(homeJson);
 }
 
-Future getHomePage() async {
+Future getHomePage2() async {
   var resp = await http.get('https://www.jiosaavn.com/');
   var doc = parse(resp.body);
   //Map map = json.decode(doc.body.children[doc.body.children.length - 1].text);
@@ -186,6 +205,12 @@ Future getHomePage() async {
       .replaceAll('new Date(', '')
       .replaceAll('Z")', 'Z"'));
   return map;
+}
+
+Future getHomePage() async {
+  return json.decode((await http.get(
+          'https://www.jiosaavn.com/api.php?__call=webapi.getLaunchData&api_version=4&_format=json&_marker=0&ctx=wap6dot0'))
+      .body);
 }
 
 List<PlayList> playlists = new List<PlayList>();

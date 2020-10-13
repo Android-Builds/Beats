@@ -9,29 +9,37 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List list = List();
+  String greet;
+
   @override
   void initState() {
     super.initState();
-    list = home['homeView']['modules'];
-    //print(list[1]);
-    print(list[0]['data'].length);
-    // print(list[0]['data'][0]['title']['text']);
+    greet = home[home.keys.last];
+    // home = home.remove('greeting');
+    //list = home.keys;
+    // print(home.keys.length);
+    // print(home['new_trending']);
+    //print(home[home.keys.elementAt(0)]);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView.builder(
-        // outer ListView
-        itemCount: list.length,
-        itemBuilder: (_, index) {
-          return SizedBox(
-            height: 270.0,
-            child: Lists(map: list[index]),
-          );
-        },
-      ),
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      // outer ListView
+      itemCount: home.length - 2,
+      itemBuilder: (_, index) {
+        return home.keys.elementAt(index) != 'global_config'
+            ? SizedBox(
+                height: 220.0,
+                child: Lists(
+                  map: home[home.keys.elementAt(index)],
+                  listtitle: home.keys.elementAt(index),
+                ),
+              )
+            : SizedBox.shrink();
+      },
     );
   }
 }
@@ -40,44 +48,58 @@ class Lists extends StatelessWidget {
   const Lists({
     Key key,
     @required this.map,
+    this.listtitle,
   }) : super(key: key);
 
-  final Map map;
+  final map;
+  final String listtitle;
 
   @override
   Widget build(BuildContext context) {
-    print(map['data'].length);
+    var radius;
+    if (listtitle == 'artist_recos' || listtitle == 'radio') {
+      radius = BorderRadius.circular(100);
+    } else {
+      radius = BorderRadius.circular(5.0);
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 20.0, left: 10.0),
-          child: Text(map['title'], style: title),
+          child: Text(
+              listtitle.replaceAll('_', ' ').replaceFirst(
+                  listtitle.substring(0, 1),
+                  listtitle.substring(0, 1).toUpperCase()),
+              style: title),
         ),
         Expanded(
           child: ListView.builder(
             // inner ListView
             scrollDirection: Axis.horizontal, // 1st add
             physics: BouncingScrollPhysics(), // 2nd add
-            itemCount: map['data'].length,
+            itemCount: map.length,
             itemBuilder: (_, index) {
-              String subtitle = map['data'][index]['be_subtitle'].length != 0
-                  ? map['data'][index]['be_subtitle'][0]['text']
-                  : '';
+              String subtitle =
+                  map[index]['subtitle'] != null ? map[index]['subtitle'] : '';
               return Column(
                 children: [
                   Container(
                     margin: EdgeInsets.symmetric(
-                      horizontal: 5.0,
+                      horizontal: 3.0,
                       vertical: 10.0,
                     ),
                     height: 120.0,
                     width: 120.0,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: radius,
                       image: DecorationImage(
                         image: CachedNetworkImageProvider(
-                          map['data'][index]['image'][0],
+                          map[index]['image']
+                              .toString()
+                              .replaceAll("150x150", "500x500")
+                              .replaceAll('http', 'https')
+                              .replaceAll('httpss', 'https'),
                         ),
                       ),
                     ),
@@ -85,9 +107,10 @@ class Lists extends StatelessWidget {
                   SizedBox(
                     width: 100.0,
                     child: Text(
-                      map['data'][index]['title']['text'],
+                      map[index]['title'],
                       style: tiletitle,
-                      maxLines: 2,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -97,7 +120,8 @@ class Lists extends StatelessWidget {
                     child: Text(
                       subtitle,
                       style: small,
-                      maxLines: 3,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
                     ),
                   ),
