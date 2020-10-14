@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:Beats/API/saavn.dart';
 import 'package:Beats/model/player.dart';
-import 'package:Beats/ui/player/nowplaying.dart';
+import 'package:Beats/ui/player/nowplaying2.dart';
 import 'package:Beats/style/appColors.dart';
 import 'package:Beats/ui/homepage/widgets/home.dart';
 import 'package:Beats/ui/homepage/widgets/search.dart';
@@ -80,7 +80,7 @@ class AppState extends State<Musify> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => NowPlaying(songId: currentSongId)));
+            builder: (context) => NowPlaying2(songId: currentSongId)));
   }
 
   @override
@@ -93,7 +93,12 @@ class AppState extends State<Musify> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   List<Widget> _widgetOptions = <Widget>[
-    Home(),
+    Column(
+      children: [
+        TopSongs(),
+        Home(),
+      ],
+    ),
     Search(),
     Text(
       'Index 2: School',

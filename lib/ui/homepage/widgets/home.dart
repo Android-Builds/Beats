@@ -15,10 +15,6 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     greet = home[home.keys.last];
-    // home = home.remove('greeting');
-    //list = home.keys;
-    // print(home.keys.length);
-    // print(home['new_trending']);
     //print(home[home.keys.elementAt(0)]);
   }
 
@@ -28,14 +24,26 @@ class _HomeState extends State<Home> {
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       // outer ListView
-      itemCount: home.length - 2,
+      itemCount: home.length - 1,
       itemBuilder: (_, index) {
-        return home.keys.elementAt(index) != 'global_config'
+        if (index == 0) {
+          return Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(
+              greet,
+              style: TextStyle(
+                fontSize: 25.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+        return home.keys.elementAt(index - 1) != 'global_config'
             ? SizedBox(
                 height: 220.0,
                 child: Lists(
-                  map: home[home.keys.elementAt(index)],
-                  listtitle: home.keys.elementAt(index),
+                  map: home[home.keys.elementAt(index - 1)],
+                  listtitle: home.keys.elementAt(index - 1),
                 ),
               )
             : SizedBox.shrink();

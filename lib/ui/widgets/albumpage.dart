@@ -1,6 +1,6 @@
 import 'package:Beats/API/saavn.dart';
 import 'package:Beats/model/player.dart';
-import 'package:Beats/ui/player/nowplaying.dart';
+import 'package:Beats/ui/player/nowplaying2.dart';
 import 'package:Beats/style/appColors.dart';
 import 'package:Beats/utils/themes.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -147,7 +147,7 @@ class _AlbumPageState extends State<AlbumPage> {
                                     onPressed: () => Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => NowPlaying(
+                                            builder: (context) => NowPlaying2(
                                                 songId: songdata[0]['id']
                                                     .toString(),
                                                 newSong: !(currentSongId ==
@@ -173,7 +173,7 @@ class _AlbumPageState extends State<AlbumPage> {
                                 onPressed: () => Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => NowPlaying(
+                                        builder: (context) => NowPlaying2(
                                             songId: songdata[index]['id']
                                                 .toString(),
                                             newSong: !(currentSongId ==
