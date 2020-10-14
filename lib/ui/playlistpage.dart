@@ -1,6 +1,6 @@
 import 'package:Beats/API/saavn.dart';
 import 'package:Beats/model/player.dart';
-import 'package:Beats/nowplaying.dart';
+import 'package:Beats/ui/player/nowplaying.dart';
 import 'package:Beats/style/appColors.dart';
 import 'package:Beats/utils/constants.dart';
 import 'package:Beats/utils/themes.dart';

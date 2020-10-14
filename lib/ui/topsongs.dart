@@ -6,7 +6,7 @@ import 'package:Beats/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../nowplaying.dart';
+import 'player/nowplaying.dart';
 
 class TopSongs extends StatefulWidget {
   const TopSongs({

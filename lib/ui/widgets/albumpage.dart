@@ -1,6 +1,6 @@
 import 'package:Beats/API/saavn.dart';
 import 'package:Beats/model/player.dart';
-import 'package:Beats/nowplaying.dart';
+import 'package:Beats/ui/player/nowplaying.dart';
 import 'package:Beats/style/appColors.dart';
 import 'package:Beats/utils/themes.dart';
 import 'package:cached_network_image/cached_network_image.dart';

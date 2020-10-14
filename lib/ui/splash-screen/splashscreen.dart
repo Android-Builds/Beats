@@ -1,6 +1,7 @@
-import 'package:Beats/ui/homePage.dart';
+import 'package:Beats/ui/homepage/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gradient_widgets/gradient_widgets.dart';
 
 import 'bloc/splash_screen_bloc.dart';
 
@@ -57,11 +58,21 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(
-                'Musify',
+              GradientText(
+                "Beats",
+                shaderRect: Rect.fromLTWH(13.0, 0.0, 100.0, 50.0),
+                gradient: LinearGradient(colors: [
+                  Colors.red[400],
+                  Colors.orangeAccent[700],
+                  Colors.orange,
+                  Colors.yellow,
+                  Colors.orange,
+                  Colors.orangeAccent[700],
+                  Colors.red[400],
+                ]),
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 30.0,
+                  fontSize: 30,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
