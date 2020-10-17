@@ -1,4 +1,4 @@
-import 'package:Beats/ui/homepage/homePage.dart';
+import 'package:Beats/ui/homepage/main_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
@@ -27,7 +27,7 @@ class SplashScreen extends StatelessWidget {
               if ((state is Initial) || (state is Loading)) {
                 return SplashScreenWidget();
               } else if (state is Loaded) {
-                return Musify();
+                return HomePage();
               }
               return null;
             },

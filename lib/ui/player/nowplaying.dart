@@ -6,7 +6,6 @@ import 'package:Beats/API/saavn.dart';
 import 'package:Beats/model/player.dart';
 import 'package:Beats/style/appColors.dart';
 import 'package:Beats/utils/constants.dart';
-import 'package:Beats/ui/player/widgets/visualizer.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -413,6 +412,7 @@ class _ControlButtonsState extends State<ControlButtons>
                 if (processingState == ProcessingState.loading ||
                     processingState == ProcessingState.buffering) {
                   return FloatingActionButton(
+                    heroTag: 'collapsed-wait',
                     backgroundColor: accent,
                     onPressed: null,
                     child: CircularProgressIndicator(
@@ -422,12 +422,14 @@ class _ControlButtonsState extends State<ControlButtons>
                 } else if (processingState == ProcessingState.completed) {
                   return FloatingActionButton(
                     backgroundColor: accent,
+                    heroTag: 'collapsed-replay',
                     child: Icon(Icons.replay),
                     onPressed: () =>
                         widget.player.seek(Duration.zero, index: 0),
                   );
                 } else {
                   return FloatingActionButton(
+                    heroTag: 'collapsed-play',
                     backgroundColor: accent,
                     child: AnimatedIcon(
                       icon: AnimatedIcons.pause_play,
@@ -509,8 +511,8 @@ class _SeekBarState extends State<SeekBar> {
         SliderTheme(
           data: SliderThemeData(
             thumbShape: SliderComponentShape.noOverlay,
-            //inactiveTrackColor: Colors.grey[500],
             activeTrackColor: accent,
+            trackHeight: 1.0,
           ),
           child: Slider(
             min: 0.0,

@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:Beats/API/saavn.dart';
 import 'package:Beats/model/player.dart';
 import 'package:Beats/style/appColors.dart';
-import 'package:Beats/ui/player/widgets/visualizer.dart';
 import 'package:Beats/utils/constants.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -12,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:just_audio/just_audio.dart';
+import 'widgets/visualizer.dart';
 
 class NowPlaying2 extends StatefulWidget {
   final String songId;

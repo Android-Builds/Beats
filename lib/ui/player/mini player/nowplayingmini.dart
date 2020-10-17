@@ -1,6 +1,6 @@
 import 'package:Beats/model/player.dart';
 import 'package:Beats/style/appColors.dart';
-import 'package:Beats/ui/widgets/progressindicator.dart';
+import 'package:Beats/ui/player/mini%20player/progressindicator.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -103,7 +103,7 @@ class _NowPlayingMiniState extends State<NowPlayingMini> {
             ),
           ),
         ),
-        SongProgressIndicator(size: height + 10.0),
+        SongProgressIndicator(),
       ],
     );
   }

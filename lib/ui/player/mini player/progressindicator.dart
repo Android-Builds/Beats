@@ -7,18 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
 class SongProgressIndicator extends StatefulWidget {
-  final double size;
-  const SongProgressIndicator({Key key, @required this.size}) : super(key: key);
   @override
-  _SongProgressIndicatorState createState() =>
-      _SongProgressIndicatorState(size);
+  _SongProgressIndicatorState createState() => _SongProgressIndicatorState();
 }
 
 class _SongProgressIndicatorState extends State<SongProgressIndicator> {
-  final double size;
-
-  _SongProgressIndicatorState(this.size);
-
   Timer t;
 
   @override
@@ -59,16 +52,14 @@ class _SongProgressIndicatorState extends State<SongProgressIndicator> {
       alignment: Alignment.center,
       children: [
         Container(
-          height: size,
-          width: size,
+          height: 50,
+          width: 50,
           child: CircularProgressIndicator(
             value: getValue(),
             valueColor: AlwaysStoppedAnimation<Color>(accent),
           ),
         ),
         Container(
-          height: size - 10.0,
-          width: size - 10.0,
           child: song != null
               ? CircleAvatar(
                   backgroundImage: CachedNetworkImageProvider(song.image),
