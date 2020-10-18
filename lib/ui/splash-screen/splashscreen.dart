@@ -1,4 +1,4 @@
-import 'package:Beats/ui/homepage/main_home.dart';
+import 'package:Beats/ui/homepage/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
