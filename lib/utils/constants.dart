@@ -5,3 +5,4 @@ Map searchedList = Map();
 Map home = Map();
 List featuredPlaylists = List();
 StreamController miniPlayer;
+Future apicall;
