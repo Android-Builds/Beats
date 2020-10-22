@@ -28,11 +28,11 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
 
 Future preLoad() {
   miniPlayer = new StreamController();
-  // topSongs().then((value) {
-  //   topsongs = value;
-  // });
+  return topSongs().then((value) {
+    topsongs = value;
+  });
   // getFeaturedPlaylists().then((value) {
   //   featuredPlaylists = value;
   // });
-  return getHomePage().then((value) => home = value);
+  // return getHomePage().then((value) => home = value);
 }

@@ -299,6 +299,68 @@ Future fetchSongDetails(songId) async {
 
   SongDetails details = new SongDetails();
 
+  songJson[songId]["more_info"]["encrypted_media_url"] =
+      await DesPlugin.decrypt(
+          key, songJson[songId]["more_info"]["encrypted_media_url"]);
+
+  // String rawkUrl = kUrl;
+
+  // final client = http.Client();
+  // final request = http.Request('HEAD', Uri.parse(kUrl))
+  //   ..followRedirects = false;
+  // final response = await client.send(request);
+  // print(response);
+  // kUrl = (response.headers['location']);
+  // debugPrint(kUrl);
+
+  // details.rawkUrl = rawkUrl;
+  // details.kUrl = kUrl;
+
+  songJson[songId]["title"] = songJson[songId]["title"]
+      .toString()
+      .split("(")[0]
+      .replaceAll("&amp;", "&")
+      .replaceAll("&#039;", "'")
+      .replaceAll("&quot;", "\"");
+  songJson[songId]["image"] = songJson[songId]["image"]
+      .toString()
+      .replaceAll('http', 'https')
+      .replaceAll('httpss', 'https')
+      .replaceAll("150x150", "500x500");
+  songJson[songId]["more_info"]["album"] = songJson[songId]["more_info"]
+          ["album"]
+      .toString()
+      .replaceAll("&quot;", "\"")
+      .replaceAll("&#039;", "'")
+      .replaceAll("&amp;", "&");
+
+  try {
+    songJson[songId]["more_info"]["artistMap"]["primary_artists"][0]["name"] =
+        songJson[songId]["more_info"]["artistMap"]["primary_artists"][0]["name"]
+            .toString()
+            .replaceAll("&quot;", "\"")
+            .replaceAll("&#039;", "'")
+            .replaceAll("&amp;", "&");
+  } catch (e) {
+    details.artist = "Unknown";
+  }
+
+  // details.lyrics =
+  //     await getLyrics(songJson, songId, details.artist, details.title);
+  //print(songJson);
+  return songJson;
+}
+
+Future fetchSongDetails1(songId) async {
+  String songUrl =
+      "https://www.jiosaavn.com/api.php?app_version=5.18.3&api_version=4&readable_version=5.18.3&v=79&_format=json&__call=song.getDetails&pids=" +
+          songId;
+  var res = await http.get(songUrl, headers: {"Accept": "application/json"});
+  var resEdited = (res.body).split("-->");
+  var songJson = json.decode(resEdited[1]);
+
+  SongDetails details = new SongDetails();
+
   String kUrl = await DesPlugin.decrypt(
       key, songJson[songId]["more_info"]["encrypted_media_url"]);
 

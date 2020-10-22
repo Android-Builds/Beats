@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:Beats/API/saavn.dart';
 import 'package:Beats/utils/constants.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';

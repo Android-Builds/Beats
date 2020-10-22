@@ -6,3 +6,4 @@ Map home = Map();
 List featuredPlaylists = List();
 StreamController miniPlayer;
 Future apicall;
+int listindex = 0;
