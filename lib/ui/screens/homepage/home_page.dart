@@ -1,13 +1,12 @@
 import 'package:Beats/API/bloc/api_bloc.dart';
 import 'package:Beats/ui/player/mini_player.dart';
-import 'package:Beats/ui/screens/top_songs.dart';
 import 'package:Beats/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:Beats/API/saavn.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
+
+import 'home.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -16,24 +15,15 @@ class HomePage extends StatelessWidget {
       create: (context) => ApiBloc(),
       child: Stack(
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TopSongsList(map: topsongs),
-              SizedBox(height: 100.0),
-              RaisedButton(
-                child: Text('Top Songs'),
-                onPressed: () {
-                  apicall = topSongs();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TopSongs(),
-                    ),
-                  );
-                },
-              ),
-            ],
+          SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TopSongsList(map: topsongs),
+                Home(),
+              ],
+            ),
           ),
           BlocBuilder<ApiBloc, ApiState>(
             builder: (context, state) {
@@ -55,40 +45,27 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-
-  Widget loaded(map, size) {
-    return SlidingUpPanel(
-      minHeight: kToolbarHeight,
-      maxHeight: size.height,
-      panel: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(child: Text('Hi')),
-        ],
-      ),
-    );
-  }
-
-  Widget error(String message) {
-    return Center(
-      child: Row(
-        children: [
-          Icon(Ionicons.ios_sad),
-          Spacer(),
-          Text(message),
-        ],
-      ),
-    );
-  }
-
-  Widget loading(size) {
-    return Container();
-  }
 }
+
+// RaisedButton(
+//   child: Text('Top Songs'),
+//   onPressed: () {
+//     apicall = topSongs();
+//     Navigator.push(
+//       context,
+//       MaterialPageRoute(
+//         builder: (context) => TopSongs(),
+//       ),
+//     );
+//   },
+// ),
 
 class TopSongsList extends StatelessWidget {
   final map;
-  const TopSongsList({Key key, this.map}) : super(key: key);
+  const TopSongsList({
+    Key key,
+    @required this.map,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;

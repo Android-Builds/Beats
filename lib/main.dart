@@ -2,6 +2,7 @@ import 'package:Beats/ui/screens/splash-screen/splashscreen.dart';
 import 'package:Beats/ui/theme/bloc/theme_bloc.dart';
 import 'package:Beats/ui/theme/bloc/theme_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 main() async {
@@ -16,6 +17,9 @@ main() async {
 }
 
 Widget myApp(BuildContext context, ThemeState state) {
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent.withOpacity(0.3),
+  ));
   return MaterialApp(
     debugShowCheckedModeBanner: false,
     title: 'Beats',

@@ -16,6 +16,7 @@ class ApiBloc extends Bloc<ApiEvent, ApiState> {
       yield ApiLoading();
       try {
         var map = await apicall;
+        //print(map);
         yield ApiLoaded(map: map);
       } catch (e) {
         yield ApiError(message: e.toString());
