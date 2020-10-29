@@ -1,5 +1,8 @@
 import 'package:Beats/API/bloc/api_bloc.dart';
 import 'package:Beats/model/player.dart';
+import 'package:Beats/style/appColors.dart';
+import 'package:Beats/ui/player/play_pause_button.dart';
+import 'package:Beats/ui/player/progressindicator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,7 +27,11 @@ class CollapsedPanel extends StatelessWidget {
     if (player == null) {
       player = AudioPlayer();
     }
-    if (true /*newSong || playlist == null*/) {
+    bool newSong = !(map['id'] == currentSongId);
+    if (newSong && player.playing) {
+      player.stop();
+    }
+    if (newSong || playlist == null) {
       playlist = ConcatenatingAudioSource(children: [
         AudioSource.uri(Uri.parse(map['more_info']['encrypted_media_url']),
             tag: AudioMetadata(
@@ -41,7 +48,7 @@ class CollapsedPanel extends StatelessWidget {
         print("An error occured $e");
       }
     }
-    //currentSongId = songId;
+    currentSongId = map['id'];
   }
 
   @override
@@ -52,37 +59,39 @@ class CollapsedPanel extends StatelessWidget {
           _init(state.map[state.map.keys.toList()[0]]);
         }
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Row(
             children: [
+              //SongProgressIndicator(image: image),
               Container(
                 height: kToolbarHeight * 0.9,
                 width: kToolbarHeight * 0.9,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(6.0),
                   image: DecorationImage(
                     image: CachedNetworkImageProvider(image),
                   ),
                 ),
               ),
               Spacer(),
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: title + '\n',
-                  style: DefaultTextStyle.of(context)
-                      .style
-                      .copyWith(fontWeight: FontWeight.bold, fontSize: 15.0),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: artist,
-                      style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 12.0,
-                      ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+                  ),
+                  SizedBox(height: 5.0),
+                  Text(
+                    artist,
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 13.0,
                     ),
-                  ],
-                ),
+                  )
+                ],
               ),
               Spacer(),
               (state is ApiLoading || state is ApiError) ? loading() : loaded(),
@@ -96,19 +105,20 @@ class CollapsedPanel extends StatelessWidget {
   Widget loading() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6.0),
-      child: CircularProgressIndicator(),
+      child: CircularProgressIndicator(
+        strokeWidth: 3.0,
+        backgroundColor: accent.withAlpha(80),
+        valueColor: AlwaysStoppedAnimation<Color>(accent),
+      ),
     );
   }
 
   Widget loaded() {
-    return Row(
+    return Stack(
+      alignment: Alignment.center,
       children: [
-        IconButton(
-          icon: Icon(Icons.play_arrow),
-          onPressed: () {
-            player.pause();
-          },
-        )
+        Transform.scale(scale: 1.3, child: SongProgressIndicator()),
+        Transform.scale(scale: 0.95, child: PlayPauseButton()),
       ],
     );
   }
