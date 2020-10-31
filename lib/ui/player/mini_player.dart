@@ -26,7 +26,10 @@ class MiniPlayer extends StatelessWidget {
         image: image,
         artist: artist,
       ),
-      panel: ExpandedPanel(),
+      panel: ExpandedPanel(
+        title: title,
+        image: image,
+      ),
     );
   }
 }

@@ -9,7 +9,7 @@ class MarqueeWidget extends StatefulWidget {
     @required this.child,
     this.direction: Axis.horizontal,
     this.animationDuration: const Duration(milliseconds: 3000),
-    this.backDuration: const Duration(milliseconds: 800),
+    this.backDuration: const Duration(milliseconds: 3000),
     this.pauseDuration: const Duration(milliseconds: 800),
   });
 
@@ -22,7 +22,7 @@ class _MarqueeWidgetState extends State<MarqueeWidget> {
 
   @override
   void initState() {
-    scrollController = ScrollController(initialScrollOffset: 50.0);
+    scrollController = ScrollController(initialScrollOffset: 0.0);
     WidgetsBinding.instance.addPostFrameCallback(scroll);
     super.initState();
   }
@@ -51,10 +51,9 @@ class _MarqueeWidgetState extends State<MarqueeWidget> {
             duration: widget.animationDuration,
             curve: Curves.ease);
       await Future.delayed(widget.pauseDuration);
-      // if (scrollController.hasClients)
-      //   await scrollController.animateTo(0.0,
-      //       duration: widget.backDuration, curve: Curves.easeOut);
-      scrollController.jumpTo(0.0);
+      if (scrollController.hasClients)
+        await scrollController.animateTo(0.0,
+            duration: widget.backDuration, curve: Curves.easeOut);
     }
   }
 }

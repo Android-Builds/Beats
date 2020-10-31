@@ -1,4 +1,4 @@
-import 'package:Beats/model/player.dart';
+import 'package:Beats/model/player/player.dart';
 import 'package:Beats/style/appColors.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';

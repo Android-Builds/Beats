@@ -1,3 +1,5 @@
+import 'package:Beats/API/bloc/api_bloc.dart';
+import 'package:Beats/model/player/bloc/player_bloc.dart';
 import 'package:Beats/ui/screens/splash-screen/splashscreen.dart';
 import 'package:Beats/ui/theme/bloc/theme_bloc.dart';
 import 'package:Beats/ui/theme/bloc/theme_state.dart';
@@ -6,14 +8,22 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 main() async {
-  runApp(
-    BlocProvider(
-      create: (context) => ThemeBloc(ThemeState(themeMode: ThemeMode.light)),
-      child: BlocBuilder<ThemeBloc, ThemeState>(
-        builder: myApp,
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider<ThemeBloc>(
+        create: (context) => ThemeBloc(ThemeState(themeMode: ThemeMode.light)),
       ),
+      BlocProvider<ApiBloc>(
+        create: (context) => ApiBloc(),
+      ),
+      BlocProvider<PlayerBloc>(
+        create: (context) => PlayerBloc(),
+      ),
+    ],
+    child: BlocBuilder<ThemeBloc, ThemeState>(
+      builder: myApp,
     ),
-  );
+  ));
 }
 
 Widget myApp(BuildContext context, ThemeState state) {

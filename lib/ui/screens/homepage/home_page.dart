@@ -11,38 +11,35 @@ import 'home.dart';
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ApiBloc(),
-      child: Stack(
-        children: [
-          SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TopSongsList(map: topsongs),
-                Home(),
-              ],
-            ),
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TopSongsList(map: topsongs),
+              Home(),
+            ],
           ),
-          BlocBuilder<ApiBloc, ApiState>(
-            builder: (context, state) {
-              if (state is ApiInitial) {
-                return SizedBox.shrink();
-              } else {
-                return MiniPlayer(
-                  image: topsongs[listindex]['image'],
-                  title: topsongs[listindex]['title'],
-                  artist: topsongs[listindex]['subtitle']
-                      .toString()
-                      .split('-')[1]
-                      .trimLeft(),
-                );
-              }
-            },
-          ),
-        ],
-      ),
+        ),
+        BlocBuilder<ApiBloc, ApiState>(
+          builder: (context, state) {
+            if (state is ApiInitial) {
+              return SizedBox.shrink();
+            } else {
+              return MiniPlayer(
+                image: topsongs[listindex]['image'],
+                title: topsongs[listindex]['title'],
+                artist: topsongs[listindex]['subtitle']
+                    .toString()
+                    .split('-')[1]
+                    .trimLeft(),
+              );
+            }
+          },
+        ),
+      ],
     );
   }
 }

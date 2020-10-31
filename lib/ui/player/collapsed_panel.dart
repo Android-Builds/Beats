@@ -1,13 +1,12 @@
 import 'package:Beats/API/bloc/api_bloc.dart';
-import 'package:Beats/model/player.dart';
+import 'package:Beats/model/player/bloc/player_bloc.dart';
 import 'package:Beats/style/appColors.dart';
+import 'package:Beats/ui/custom_widgets/marquee_text.dart';
 import 'package:Beats/ui/player/play_pause_button.dart';
 import 'package:Beats/ui/player/progressindicator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:audio_session/audio_session.dart';
-import 'package:just_audio/just_audio.dart';
 
 class CollapsedPanel extends StatelessWidget {
   final String image;
@@ -21,42 +20,12 @@ class CollapsedPanel extends StatelessWidget {
     @required this.artist,
   }) : super(key: key);
 
-  _init(map) async {
-    final session = await AudioSession.instance;
-    await session.configure(AudioSessionConfiguration.music());
-    if (player == null) {
-      player = AudioPlayer();
-    }
-    bool newSong = !(map['id'] == currentSongId);
-    if (newSong && player.playing) {
-      player.stop();
-    }
-    if (newSong || playlist == null) {
-      playlist = ConcatenatingAudioSource(children: [
-        AudioSource.uri(Uri.parse(map['more_info']['encrypted_media_url']),
-            tag: AudioMetadata(
-              album: map['title'],
-              title: map['more_info']['album'],
-              artwork: map['image'],
-            ))
-      ]);
-      try {
-        await player.load(playlist);
-        player.play();
-      } catch (e) {
-        // catch load errors: 404, invalid url ...
-        print("An error occured $e");
-      }
-    }
-    currentSongId = map['id'];
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ApiBloc, ApiState>(
       builder: (context, state) {
         if (state is ApiLoaded) {
-          _init(state.map[state.map.keys.toList()[0]]);
+          BlocProvider.of<PlayerBloc>(context).add(LoadPlayer(state.map));
         }
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -73,28 +42,41 @@ class CollapsedPanel extends StatelessWidget {
                   ),
                 ),
               ),
-              Spacer(),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+              SizedBox(width: 15.0),
+              SizedBox(
+                width: 220.0,
+                child: MarqueeWidget(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18.0),
+                      ),
+                      SizedBox(height: 5.0),
+                      Text(
+                        artist,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 13.0,
+                        ),
+                      )
+                    ],
                   ),
-                  SizedBox(height: 5.0),
-                  Text(
-                    artist,
-                    style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 13.0,
-                    ),
-                  )
-                ],
+                ),
               ),
               Spacer(),
-              (state is ApiLoading || state is ApiError) ? loading() : loaded(),
+              BlocBuilder<PlayerBloc, PlayerState>(
+                builder: (context, state) {
+                  if (state is PlayerLoaded)
+                    return loaded();
+                  else
+                    return loading();
+                },
+              )
+              //(state is ApiLoading || state is ApiError) ? loading() : loaded(),
             ],
           ),
         );
@@ -122,12 +104,4 @@ class CollapsedPanel extends StatelessWidget {
       ],
     );
   }
-}
-
-class AudioMetadata {
-  final String album;
-  final String title;
-  final String artwork;
-
-  AudioMetadata({this.album, this.title, this.artwork});
 }
