@@ -29,6 +29,7 @@ class HomePage extends StatelessWidget {
               return SizedBox.shrink();
             } else {
               return MiniPlayer(
+                map: topsongs[listindex],
                 image: topsongs[listindex]['image'],
                 title: topsongs[listindex]['title'],
                 artist: topsongs[listindex]['subtitle']

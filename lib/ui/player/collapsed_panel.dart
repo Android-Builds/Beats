@@ -29,55 +29,58 @@ class CollapsedPanel extends StatelessWidget {
         }
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Row(
-            children: [
-              //SongProgressIndicator(image: image),
-              Container(
-                height: kToolbarHeight * 0.9,
-                width: kToolbarHeight * 0.9,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6.0),
-                  image: DecorationImage(
-                    image: CachedNetworkImageProvider(image),
+          child: Container(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: Row(
+              children: [
+                //SongProgressIndicator(image: image),
+                Container(
+                  height: kToolbarHeight * 0.9,
+                  width: kToolbarHeight * 0.9,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6.0),
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider(image),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(width: 15.0),
-              SizedBox(
-                width: 220.0,
-                child: MarqueeWidget(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18.0),
-                      ),
-                      SizedBox(height: 5.0),
-                      Text(
-                        artist,
-                        style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          fontSize: 13.0,
+                SizedBox(width: 15.0),
+                SizedBox(
+                  width: 220.0,
+                  child: MarqueeWidget(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18.0),
                         ),
-                      )
-                    ],
+                        SizedBox(height: 5.0),
+                        Text(
+                          artist,
+                          style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            fontSize: 13.0,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Spacer(),
-              BlocBuilder<PlayerBloc, PlayerState>(
-                builder: (context, state) {
-                  if (state is PlayerLoaded)
-                    return loaded();
-                  else
-                    return loading();
-                },
-              )
-              //(state is ApiLoading || state is ApiError) ? loading() : loaded(),
-            ],
+                Spacer(),
+                BlocBuilder<PlayerBloc, PlayerState>(
+                  builder: (context, state) {
+                    if (state is PlayerLoaded)
+                      return loaded();
+                    else
+                      return loading();
+                  },
+                )
+                //(state is ApiLoading || state is ApiError) ? loading() : loaded(),
+              ],
+            ),
           ),
         );
       },

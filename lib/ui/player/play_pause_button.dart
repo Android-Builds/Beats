@@ -5,7 +5,12 @@ import 'package:just_audio/just_audio.dart';
 
 class PlayPauseButton extends StatefulWidget {
   final player;
-  const PlayPauseButton({Key key, this.player}) : super(key: key);
+  final bool mini;
+  const PlayPauseButton({
+    Key key,
+    this.player,
+    this.mini = true,
+  }) : super(key: key);
   @override
   _PlayPauseButtonState createState() => _PlayPauseButtonState();
 }
@@ -30,21 +35,24 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
         if (processingState == ProcessingState.loading ||
             processingState == ProcessingState.buffering) {
           return FloatingActionButton(
+            mini: widget.mini,
             backgroundColor: accent,
             onPressed: null,
             child: CircularProgressIndicator(
-              backgroundColor: Colors.black,
+              strokeWidth: 3.0,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
             ),
           );
         } else if (processingState == ProcessingState.completed) {
           return FloatingActionButton(
+            mini: widget.mini,
             backgroundColor: accent,
             child: Icon(Icons.replay),
             onPressed: () => widget.player.seek(Duration.zero, index: 0),
           );
         } else {
           return FloatingActionButton(
-            mini: true,
+            mini: widget.mini,
             backgroundColor: accent,
             child: AnimatedIcon(
               icon: AnimatedIcons.pause_play,
